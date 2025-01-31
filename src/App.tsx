@@ -26,29 +26,35 @@ const SkillCard = ({ icon: Icon, title, skills }: { icon: any; title: string; sk
   return (
     <motion.div 
       whileHover={{ y: -10 }}
-      className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl p-6 hover:shadow-2xl transition-all duration-300 group"
+      className="bg-gray-800/80 backdrop-blur-lg rounded-xl p-6 border border-gray-700 hover:border-cyan-400/30 transition-all relative group overflow-hidden"
     >
-      <div className="flex items-center gap-3 mb-5">
-        <div className="p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg transform group-hover:rotate-12 transition-transform">
-          <Icon className="text-white" size={24} />
-        </div>
-        <h3 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-          {title}
-        </h3>
-      </div>
-      <ul className="grid grid-cols-2 gap-3">
-        {skills.map((skill, index) => (
-          <motion.li 
-            key={index}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: index * 0.1 }}
-            className="px-4 py-2 bg-gray-50/50 rounded-full text-sm font-medium text-gray-700 hover:bg-blue-50 transition-colors"
+      <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+      <div className="relative z-10">
+        <div className="flex items-center gap-3 mb-5">
+          <motion.div 
+            whileHover={{ rotate: 15 }}
+            className="p-3 bg-gradient-to-br from-cyan-400 to-purple-600 rounded-lg"
           >
-            {skill}
-          </motion.li>
-        ))}
-      </ul>
+            <Icon className="text-white" size={24} />
+          </motion.div>
+          <h3 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+            {title}
+          </h3>
+        </div>
+        <ul className="grid grid-cols-2 gap-3">
+          {skills.map((skill, index) => (
+            <motion.li 
+              key={index}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: index * 0.1 }}
+              className="px-4 py-2 bg-gray-700/50 rounded-full text-sm font-medium text-gray-300 hover:bg-cyan-400/10 hover:text-cyan-300 transition-colors"
+            >
+              {skill}
+            </motion.li>
+          ))}
+        </ul>
+      </div>
     </motion.div>
   );
 };
@@ -57,23 +63,26 @@ const ProjectCard = ({ title, description, tech, icon: Icon }: { title: string; 
   return (
     <motion.div 
       whileHover={{ scale: 1.02 }}
-      className="group relative bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl p-8 hover:shadow-2xl transition-all duration-300 overflow-hidden"
+      className="group relative bg-gray-800/80 backdrop-blur-lg rounded-xl p-8 border border-gray-700 hover:border-cyan-400/30 transition-all overflow-hidden"
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-indigo-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity" />
       <div className="relative z-10">
         <div className="flex items-center gap-4 mb-6">
-          <div className="p-4 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl">
+          <motion.div 
+            whileHover={{ rotate: 12 }}
+            className="p-4 bg-gradient-to-br from-cyan-400 to-purple-600 rounded-xl"
+          >
             <Icon className="text-white" size={28} />
-          </div>
-          <h3 className="text-2xl font-bold text-gray-800">{title}</h3>
+          </motion.div>
+          <h3 className="text-2xl font-bold text-gray-100">{title}</h3>
         </div>
-        <p className="text-gray-600 mb-6 leading-relaxed">{description}</p>
+        <p className="text-gray-400 mb-6 leading-relaxed">{description}</p>
         <div className="flex flex-wrap gap-3">
           {tech.map((t, index) => (
             <motion.span 
               key={index}
               whileHover={{ scale: 1.05 }}
-              className="px-4 py-2 bg-gray-100 rounded-full text-sm font-medium text-gray-700 hover:bg-blue-100 transition-colors"
+              className="px-4 py-2 bg-gray-700/50 rounded-full text-sm font-medium text-cyan-300 hover:bg-cyan-400/10 transition-colors"
             >
               {t}
             </motion.span>
@@ -87,18 +96,22 @@ const ProjectCard = ({ title, description, tech, icon: Icon }: { title: string; 
 function App() {
   const { scrollYProgress } = useScroll();
   const scaleX = useTransform(scrollYProgress, [0, 1], [0, 1]);
+  const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
 
   return (
-    <div className="bg-gradient-to-br from-gray-50 to-blue-50">
+    <div className="bg-gradient-to-br from-gray-900 to-gray-800 min-h-screen">
       {/* Progress Bar */}
       <motion.div 
         style={{ scaleX }}
-        className="fixed top-0 left-0 right-0 h-2 bg-gradient-to-r from-blue-500 to-indigo-600 origin-left z-50"
+        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-400 to-purple-600 origin-left z-50"
       />
 
       {/* Hero Section */}
-      <Section className="min-h-fit flex items-center justify-center relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-indigo-600/10 transform -skew-y-6" />
+      <Section className="relative overflow-hidden">
+        <motion.div
+          style={{ opacity }}
+          className="absolute inset-0 bg-gradient-to-br from-cyan-500/20 to-purple-600/20"
+        />
         <div className="container mx-auto px-4 text-center relative z-10">
           <motion.div
             initial={{ scale: 0, rotate: -180 }}
@@ -106,17 +119,18 @@ function App() {
             transition={{ type: 'spring', stiffness: 260, damping: 20 }}
             className="mb-12"
           >
-            <div className="w-40 h-40 mx-auto mb-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-2xl">
-              <span className="text-5xl text-white font-bold animate-pulse">SS</span>
+            <div className="w-40 h-40 mx-auto mb-8 rounded-full bg-gradient-to-br from-cyan-400 to-purple-600 flex items-center justify-center shadow-2xl relative">
+              <div className="absolute inset-0 rounded-full bg-cyan-400/30 animate-pulse blur-xl" />
+              <span className="text-5xl text-white font-bold">SS</span>
             </div>
           </motion.div>
           
           <motion.h1 
             initial={{ opacity: 0, y: -40 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-6xl font-black text-gray-900 mb-6"
+            className="text-6xl font-black mb-6"
           >
-            <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
               Siddharth Sahu
             </span>
           </motion.h1>
@@ -125,9 +139,9 @@ function App() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className="text-2xl font-medium text-gray-600 mb-12"
+            className="text-2xl font-medium text-gray-400 mb-12"
           >
-            Building Digital Experiences with <span className="text-blue-600">Innovation</span>
+            Building <span className="text-cyan-400">Future</span> with Code & Creativity
           </motion.p>
 
           <motion.div 
@@ -147,42 +161,33 @@ function App() {
                 whileHover={{ y: -5, scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 href={item.link}
-                className="p-3 bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300"
+                className="p-3 bg-gray-800 rounded-xl border border-gray-700 hover:border-cyan-400/50 hover:bg-cyan-400/10 transition-all group"
               >
-                <item.icon className="text-gray-700 hover:text-blue-600" size={28} />
+                <item.icon className="text-gray-400 group-hover:text-cyan-400 transition-colors" size={28} />
               </motion.a>
             ))}
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.7 }}
-            className="mt-24 animate-float"
-          >
-            <div className="w-8 h-8 mx-auto border-4 border-blue-500 rounded-full animate-ping" />
           </motion.div>
         </div>
       </Section>
 
       {/* Education & Experience */}
-      <Section className="bg-white/50 backdrop-blur-lg">
+      <Section className="relative">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto">
             {/* Education */}
             <motion.div 
-              whileHover={{ scale: 1.02 }}
-              className="p-8 bg-white rounded-2xl shadow-xl border-l-8 border-blue-500"
+              whileHover={{ y: -5 }}
+              className="p-8 bg-gray-800/80 backdrop-blur-lg rounded-xl border border-gray-700 hover:border-cyan-400/30 transition-all"
             >
               <div className="flex items-center gap-4 mb-6">
-                <GraduationCap className="text-blue-600" size={32} />
-                <h2 className="text-3xl font-bold text-gray-800">Education</h2>
+                <GraduationCap className="text-cyan-400" size={32} />
+                <h2 className="text-3xl font-bold text-gray-100">Education</h2>
               </div>
               <div className="space-y-6">
-                <div className="pb-6 border-b border-gray-200">
-                  <h3 className="text-xl font-semibold text-gray-800">Siksha 'O' Anusandhan University</h3>
-                  <p className="text-gray-600 mt-2">B.Tech in Computer Science</p>
-                  <p className="text-blue-600 font-medium mt-2">CGPA: 8.18</p>
+                <div className="pb-6 border-b border-gray-700">
+                  <h3 className="text-xl font-semibold text-gray-100">Siksha 'O' Anusandhan University</h3>
+                  <p className="text-gray-400 mt-2">B.Tech in Computer Science</p>
+                  <p className="text-cyan-400 font-medium mt-2">CGPA: 8.18</p>
                   <p className="text-gray-500 text-sm mt-2">2021 - 2025</p>
                 </div>
               </div>
@@ -190,24 +195,24 @@ function App() {
 
             {/* Experience */}
             <motion.div 
-              whileHover={{ scale: 1.02 }}
-              className="p-8 bg-white rounded-2xl shadow-xl border-l-8 border-indigo-500"
+              whileHover={{ y: -5 }}
+              className="p-8 bg-gray-800/80 backdrop-blur-lg rounded-xl border border-gray-700 hover:border-purple-400/30 transition-all"
             >
               <div className="flex items-center gap-4 mb-6">
-                <Briefcase className="text-indigo-600" size={32} />
-                <h2 className="text-3xl font-bold text-gray-800">Experience</h2>
+                <Briefcase className="text-purple-400" size={32} />
+                <h2 className="text-3xl font-bold text-gray-100">Experience</h2>
               </div>
               <div className="space-y-6">
-                <div className="pb-6 border-b border-gray-200">
-                  <h3 className="text-xl font-semibold text-gray-800">Block Stars Pvt Ltd</h3>
-                  <p className="text-gray-600 mt-2">Full Stack Developer</p>
-                  <div className="mt-4 space-y-3 text-gray-600">
+                <div className="pb-6 border-b border-gray-700">
+                  <h3 className="text-xl font-semibold text-gray-100">Block Stars Pvt Ltd</h3>
+                  <p className="text-gray-400 mt-2">Full Stack Developer</p>
+                  <div className="mt-4 space-y-3 text-gray-400">
                     <p className="flex items-center gap-2">
-                      <span className="w-2 h-2 bg-blue-500 rounded-full" />
+                      <span className="w-2 h-2 bg-cyan-400 rounded-full" />
                       Designed responsive UI components
                     </p>
                     <p className="flex items-center gap-2">
-                      <span className="w-2 h-2 bg-blue-500 rounded-full" />
+                      <span className="w-2 h-2 bg-cyan-400 rounded-full" />
                       Optimized RESTful APIs integration
                     </p>
                   </div>
@@ -219,12 +224,12 @@ function App() {
       </Section>
 
       {/* Skills Section */}
-      <Section className="bg-gradient-to-br from-gray-50 to-blue-50">
+      <Section className="bg-gradient-to-br from-gray-900/50 to-gray-800/50">
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-bold text-center mb-16 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-            Technical Expertise
+          <h2 className="text-4xl font-bold text-center mb-16 bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+            Technical Arsenal
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
             {[
               { icon: Code, title: "Languages", skills: ['JavaScript', 'Java', 'Python'] },
               { icon: Globe, title: "Frontend", skills: ['React', 'Next.js', 'Tailwind CSS'] },
@@ -240,12 +245,12 @@ function App() {
       </Section>
 
       {/* Projects Section */}
-      <Section className="bg-white/50 backdrop-blur-lg">
+      <Section className="relative">
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-bold text-center mb-16 bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">
-            Featured Projects
+          <h2 className="text-4xl font-bold text-center mb-16 bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
+            Key Projects
           </h2>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-6xl mx-auto">
             <ProjectCard
               icon={Car}
               title="GoCabs"
@@ -263,7 +268,7 @@ function App() {
       </Section>
 
       {/* Footer */}
-      <footer className="bg-gradient-to-br from-gray-900 to-blue-900 text-white py-12">
+      <footer className="bg-gradient-to-br from-gray-900 to-gray-800 py-12 border-t border-gray-700">
         <div className="container mx-auto px-4 text-center">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
@@ -275,14 +280,14 @@ function App() {
                 key={index}
                 whileHover={{ y: -5, scale: 1.1 }}
                 href="#"
-                className="p-3 bg-white/10 rounded-full backdrop-blur-lg hover:bg-white/20 transition-all"
+                className="p-3 bg-gray-700/50 rounded-full backdrop-blur-lg hover:bg-cyan-400/20 transition-all"
               >
-                <Icon className="text-white" size={24} />
+                <Icon className="text-gray-400 hover:text-cyan-400 transition-colors" size={24} />
               </motion.a>
             ))}
           </motion.div>
-          <p className="text-gray-400 text-sm">
-            © {new Date().getFullYear()} Siddharth Sahu. Crafted with passion and React.
+          <p className="text-gray-500 text-sm">
+            © {new Date().getFullYear()} Siddharth Sahu. Crafted with <span className="text-cyan-400">innovation</span> and React.
           </p>
         </div>
       </footer>
