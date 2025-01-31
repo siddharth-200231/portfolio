@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { motion, useScroll, useTransform, useMotionTemplate, useMotionValue } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { Github, Mail, Linkedin, Code2, GraduationCap, Briefcase, Heart, Car, Code, Database, Terminal, Globe } from 'lucide-react';
+import { Github, Mail, Linkedin, Code2, GraduationCap, Briefcase, Heart, Car, Code, Database, Terminal, Globe, Download } from 'lucide-react';
 
 // Noise texture SVG pattern
 const noiseTexture = `url("data:image/svg+xml,%3Csvg viewBox='0 0 1024 1024' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`;
@@ -227,7 +227,7 @@ function App() {
             transition={{ delay: 0.3 }}
             className="flex flex-wrap justify-center gap-4 mb-12"
           >
-            {['Full Stack Dev', 'ML Enthusiast', 'UI/UX Designer'].map((text, i) => (
+            {['Full Stack Dev', 'Mern Stack Developer', 'DevOps'].map((text, i) => (
               <motion.div
                 key={i}
                 initial={{ scale: 0 }}
@@ -249,10 +249,10 @@ function App() {
             className="flex justify-center gap-6"
           >
             {[
-              { icon: Github, link: 'https://github.com' },
-              { icon: Mail, link: 'mailto:email@example.com' },
-              { icon: Linkedin, link: 'https://linkedin.com' },
-              { icon: Code2, link: 'https://leetcode.com' },
+              { icon: Github, link: 'https://github.com/siddharth-200231' },
+              { icon: Mail, link: 'sahusidd715@gmail.com' },
+              { icon: Linkedin, link: 'https://www.linkedin.com/in/siddharth-sahu-40aa57289/' },
+              { icon: Code2, link: 'https://leetcode.com/u/siddharth_123456/' },
             ].map((item, index) => (
               <MagneticButton key={index}>
                 <motion.a
@@ -265,6 +265,23 @@ function App() {
                 </motion.a>
               </MagneticButton>
             ))}
+          </motion.div>
+
+          {/* Download CV Button */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7 }}
+            className="mt-12"
+          >
+            <a
+              href="/siddcv.pdf" // Replace with your CV path
+              download="Siddharth_Sahu_CV.pdf"
+              className="inline-flex items-center px-8 py-3 bg-gradient-to-r from-cyan-400 to-purple-600 rounded-full text-white font-medium hover:from-cyan-500 hover:to-purple-700 transition-all"
+            >
+              <Download className="mr-2" size={20} />
+              Download CV
+            </a>
           </motion.div>
         </div>
 
