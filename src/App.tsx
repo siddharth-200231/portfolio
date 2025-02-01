@@ -1,487 +1,494 @@
-import React, { useRef } from 'react';
-import { motion, useScroll, useTransform, useMotionTemplate, useMotionValue } from 'framer-motion';
-import { useInView } from 'react-intersection-observer';
-import { Github, Mail, Linkedin, Code2, GraduationCap, Briefcase, Heart, Car, Code, Database, Terminal, Globe, Download } from 'lucide-react';
+import React, { useRef } from "react";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useMotionTemplate,
+  useMotionValue,
+  useSpring,
+} from "framer-motion";
+import { useInView } from "react-intersection-observer";
+import {
+  Github,
+  Mail,
+  Linkedin,
+  Code2,
+  GraduationCap,
+  Briefcase,
+  Heart,
+  Car,
+  Code,
+  Download,
+} from "lucide-react";
 
-// Noise texture for subtle background effects
-const noiseTexture = `url("data:image/svg+xml,%3Csvg viewBox='0 0 1024 1024' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`;
+// Define timeline data
+const timelineData = [
+  {
+    date: "Nov 2021 - Aug 2025",
+    title: "Bachelor of Technology – Computer Science and Engineering",
+    subtitle: "Siksha ’O’ Anusandhan University (ITER)",
+    description: "CGPA: 8.18 | Bhubaneswar, Odisha",
+    icon: <GraduationCap className="text-emerald-400" size={24} />,
+  },
+  {
+    date: "Nov 2024 - Jan 2025",
+    title: "Full Stack Developer",
+    subtitle: "Block Stars Pvt Ltd",
+    description: "Remote | Designed and implemented reusable UI components and responsive web pages.",
+    icon: <Briefcase className="text-indigo-400" size={24} />,
+  },
+];
 
-// Magnetic button component for interactive hover effects
-const MagneticButton = ({ children, className }: { children: React.ReactNode; className?: string }) => {
+// Define skills data
+const skillsData = [
+  {
+    title: "Languages",
+    skills: ["JavaScript", "TypeScript", "Python", "Java"],
+  },
+  {
+    title: "Frontend",
+    skills: ["React", "Next.js", "Tailwind CSS", "Framer Motion"],
+  },
+  {
+    title: "Backend",
+    skills: ["Node.js", "Express", "GraphQL", "REST APIs"],
+  },
+  {
+    title: "Databases",
+    skills: ["MongoDB", "PostgreSQL", "Firebase", "Redis"],
+  },
+  {
+    title: "DevOps",
+    skills: ["Docker", "Kubernetes", "AWS", "CI/CD Pipelines"],
+  },
+  {
+    title: "Machine Learning",
+    skills: ["TensorFlow", "PyTorch", "Pandas", "Scikit-learn"],
+  },
+];
+
+// Define projects data
+const projectsData = [
+  {
+    title: "GoCabs",
+    description: "Real-time cab booking platform with live tracking",
+    technologies: ["React", "Node.js", "WebSockets"],
+    icon: <Car className="text-indigo-400" size={32} />,
+  },
+  {
+    title: "Health AI",
+    description: "Machine learning model for disease prediction",
+    technologies: ["Python", "TensorFlow", "Pandas"],
+    icon: <Heart className="text-emerald-400" size={32} />,
+  },
+];
+
+// CyberButton Component
+const CyberButton = ({ children, className }: { children: React.ReactNode; className?: string }) => {
   const ref = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
+  const springX = useSpring(x, { stiffness: 300, damping: 30 });
+  const springY = useSpring(y, { stiffness: 300, damping: 30 });
 
   const handleMouse = (e: React.MouseEvent) => {
-    const { clientX, clientY } = e;
     const rect = ref.current?.getBoundingClientRect();
     if (rect) {
-      x.set(clientX - rect.left - rect.width / 2);
-      y.set(clientY - rect.top - rect.height / 2);
+      x.set(e.clientX - rect.left - rect.width / 2);
+      y.set(e.clientY - rect.top - rect.height / 2);
     }
-  };
-
-  const reset = () => {
-    x.set(0);
-    y.set(0);
   };
 
   return (
     <motion.div
       ref={ref}
-      style={{ x, y }}
       onMouseMove={handleMouse}
-      onMouseLeave={reset}
-      whileHover={{ scale: 1.1 }}
-      transition={{ type: "spring", stiffness: 300, damping: 20 }}
-      className={`relative cursor-pointer ${className}`}
-    >
-      {children}
-    </motion.div>
-  );
-};
-
-// Hover glow effect for interactive elements
-const HoverGlow = () => {
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-
-  const handleMouseMove = ({ clientX, clientY, currentTarget }: React.MouseEvent) => {
-    const { left, top } = currentTarget.getBoundingClientRect();
-    mouseX.set(clientX - left);
-    mouseY.set(clientY - top);
-  };
-
-  return (
-    <motion.div
-      onMouseMove={handleMouseMove}
-      className="absolute inset-0 pointer-events-none overflow-hidden"
+      onMouseLeave={() => {
+        x.set(0);
+        y.set(0);
+      }}
+      className={`relative cursor-pointer overflow-hidden ${className}`}
     >
       <motion.div
-        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
         style={{
-          background: useMotionTemplate`radial-gradient(600px circle at ${mouseX}px ${mouseY}px, 
-            rgba(34, 211, 238, 0.15),
-            transparent 80%)`
+          x: springX,
+          y: springY,
+          background: useMotionTemplate`radial-gradient(120px circle at ${springX}px ${springY}px, 
+            rgba(110, 231, 183, 0.4),
+            transparent 80%)`,
         }}
+        className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-300"
       />
+      <div className="relative z-10">{children}</div>
+      <div className="absolute inset-0 border border-emerald-400/30 hover:border-emerald-400/50 transition-all duration-500 rounded-xl" />
     </motion.div>
   );
 };
 
-// Section wrapper with entrance animations
-const Section = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => {
-  const [ref, inView] = useInView({
-    triggerOnce: true,
-    threshold: 0.1,
-  });
+// HolographicSection Component
+const HolographicSection = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => {
+  const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.1 });
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
 
   return (
     <motion.section
       ref={ref}
-      initial={{ opacity: 0, y: 80 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.8, type: 'spring' }}
-      className={`py-20 relative ${className}`}
+      initial={{ opacity: 0 }}
+      animate={inView ? { opacity: 1 } : {}}
+      className={`relative py-24 overflow-hidden ${className}`}
     >
-      <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-transparent pointer-events-none" />
-      <HoverGlow />
-      {children}
+      <motion.div
+        className="absolute inset-0 opacity-10 pointer-events-none"
+        style={{
+          background: useMotionTemplate`
+            conic-gradient(
+              from 230.29deg at 51.63% 52.16%,
+              hsl(160, 60%, 50%) 0deg,
+              hsl(180, 100%, 50%) 60deg,
+              hsl(200, 100%, 50%) 120deg,
+              hsl(220, 100%, 50%) 180deg,
+              hsl(240, 100%, 50%) 240deg,
+              hsl(260, 100%, 50%) 300deg,
+              hsl(160, 60%, 50%) 360deg
+            )
+          `,
+          filter: `blur(80px)`,
+        }}
+        animate={{
+          rotate: [0, 360],
+        }}
+        transition={{
+          duration: 20,
+          repeat: Infinity,
+          ease: "linear",
+        }}
+      />
+      <div className="container mx-auto px-4 relative z-10">{children}</div>
     </motion.section>
   );
 };
 
-// Skill card component with hover animations
-const SkillCard = ({ icon: Icon, title, skills }: { icon: any; title: string; skills: string[] }) => {
-  return (
-    <motion.div 
-      initial={{ opacity: 0, scale: 0.9 }}
-      whileInView={{ opacity: 1, scale: 1 }}
-      viewport={{ once: true }}
-      whileHover={{ y: -10 }}
-      transition={{ duration: 0.4, type: 'spring' }}
-      className="group relative bg-gradient-to-br from-gray-900/80 to-black/60 backdrop-blur-3xl rounded-2xl p-6 border border-gray-800 hover:border-cyan-400/20 transition-all duration-300 shadow-2xl"
-    >
-      <div className="absolute inset-0 opacity-30 mix-blend-overlay" style={{ background: noiseTexture }} />
-      <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-      <div className="relative z-10">
-        <div className="flex items-center gap-3 mb-5">
-          <motion.div 
-            animate={{ rotate: [0, 15, -5, 0] }}
-            transition={{ duration: 4, repeat: Infinity }}
-            className="p-3 bg-gradient-to-br from-cyan-400/90 to-purple-600/90 rounded-lg shadow-lg"
-          >
-            <Icon className="text-white" size={24} />
-          </motion.div>
-          <h3 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
-            {title}
-          </h3>
-        </div>
-        <ul className="grid grid-cols-2 gap-2">
-          {skills.map((skill, index) => (
-            <motion.li 
-              key={index}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className="px-3 py-2 bg-gray-900/50 rounded-full text-sm font-medium text-gray-300 hover:bg-cyan-400/10 hover:text-cyan-300 transition-all duration-300 backdrop-blur-sm border border-gray-800/50 hover:border-cyan-400/30"
-            >
-              {skill}
-            </motion.li>
-          ))}
-        </ul>
-      </div>
-    </motion.div>
-  );
-};
-
-// Project card component with dynamic hover effects
-const ProjectCard = ({ title, description, tech, icon: Icon }: { title: string; description: string; tech: string[]; icon: any }) => {
-  const hoverX = useMotionValue(0);
-  const hoverY = useMotionValue(0);
-
-  const handleHover = ({ clientX, clientY, currentTarget }: React.MouseEvent) => {
-    const rect = currentTarget.getBoundingClientRect();
-    hoverX.set(clientX - rect.left);
-    hoverY.set(clientY - rect.top);
-  };
+// GlowingCard Component
+const GlowingCard = ({ children }: { children: React.ReactNode }) => {
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const rotateX = useSpring(useTransform(mouseY, [0, 400], [10, -10]), { stiffness: 300, damping: 30 });
+  const rotateY = useSpring(useTransform(mouseX, [0, 400], [-10, 10]), { stiffness: 300, damping: 30 });
 
   return (
-    <motion.div 
-      onMouseMove={handleHover}
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      whileHover={{ scale: 1.03 }}
-      transition={{ duration: 0.4, type: 'spring' }}
-      className="group relative bg-gradient-to-br from-gray-900/80 to-black/60 backdrop-blur-3xl rounded-2xl p-8 border border-gray-800 hover:border-cyan-400/20 transition-all duration-300 shadow-2xl overflow-hidden"
+    <motion.div
+      onMouseMove={({ clientX, clientY, currentTarget }) => {
+        const { left, top } = currentTarget.getBoundingClientRect();
+        mouseX.set(clientX - left);
+        mouseY.set(clientY - top);
+      }}
+      style={{
+        rotateX,
+        rotateY,
+        transformPerspective: 1000,
+      }}
+      className="group relative bg-gray-900/80 backdrop-blur-2xl rounded-3xl border border-gray-800 p-8 shadow-2xl"
     >
-      <div className="absolute inset-0 opacity-30 mix-blend-overlay" style={{ background: noiseTexture }} />
       <motion.div
-        className="absolute -inset-px bg-gradient-radial from-cyan-400/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
         style={{
-          x: hoverX,
-          y: hoverY,
-          background: useMotionTemplate`radial-gradient(300px circle at ${hoverX}px ${hoverY}px, 
-            rgba(34, 211, 238, 0.1),
-            transparent 80%)`
+          background: useMotionTemplate`radial-gradient(400px circle at ${mouseX}px ${mouseY}px, 
+            rgba(110, 231, 183, 0.1),
+            transparent 80%)`,
         }}
       />
-      <div className="relative z-10">
-        <div className="flex items-center gap-4 mb-6">
-          <motion.div 
-            whileHover={{ rotate: 12 }}
-            className="p-4 bg-gradient-to-br from-cyan-400/90 to-purple-600/90 rounded-xl shadow-lg"
-          >
-            <Icon className="text-white" size={28} />
-          </motion.div>
-          <h3 className="text-2xl font-bold text-gray-100">{title}</h3>
-        </div>
-        <p className="text-gray-400 mb-6 leading-relaxed">{description}</p>
-        <div className="flex flex-wrap gap-2">
-          {tech.map((t, index) => (
-            <motion.span 
-              key={index}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: index * 0.1 }}
-              whileHover={{ scale: 1.1 }}
-              className="px-3 py-1.5 bg-gray-900/50 rounded-full text-sm font-medium text-cyan-300 hover:bg-cyan-400/10 transition-all duration-300 backdrop-blur-sm border border-gray-800/50 hover:border-cyan-400/30"
-            >
-              {t}
-            </motion.span>
-          ))}
-        </div>
-      </div>
+      {children}
     </motion.div>
   );
 };
 
-// Main App component
+// App Component
 function App() {
   const { scrollYProgress } = useScroll();
-  const scaleX = useTransform(scrollYProgress, [0, 1], [0, 1]);
-  const rotate = useTransform(scrollYProgress, [0, 1], [0, 15]);
-  const y = useTransform(scrollYProgress, [0, 1], [0, -200]);
+  const scaleX = useTransform(scrollYProgress, [0, 1], [0.2, 1]);
+  const rotate = useTransform(scrollYProgress, [0, 1], [0, 5]);
+  const background = useTransform(
+    scrollYProgress,
+    [0, 1],
+    [
+      "linear-gradient(0deg, #0c0a1d 0%, #1a1438 100%)",
+      "linear-gradient(180deg, #0c0a1d 0%, #2a1e5c 100%)",
+    ]
+  );
+
+  // GlitchText Component
+  const GlitchText = ({ children }: { children: string }) => (
+    <div className="relative inline-block">
+      <motion.span
+        className="absolute inset-0 bg-gradient-to-r from-emerald-400 via-indigo-400 to-purple-400 bg-clip-text opacity-40"
+        animate={{
+          x: [-2, 2, -2, 2, 0],
+          y: [1, -1, 1, -1, 0],
+        }}
+        transition={{
+          duration: 2,
+          repeat: Infinity,
+        }}
+      >
+        {children}
+      </motion.span>
+      <span className="relative bg-gradient-to-r from-emerald-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent">
+        {children}
+      </span>
+    </div>
+  );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950">
-      {/* Dynamic grid background */}
-      <motion.div 
-        style={{ rotate, y }}
-        className="fixed inset-0 opacity-10 mix-blend-overlay pointer-events-none"
+    <motion.div style={{ background }} className="min-h-screen">
+      {/* Animated grid lines */}
+      <motion.div
+        style={{ rotate }}
+        className="fixed inset-0 opacity-5 pointer-events-none"
       >
-        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse">
-              <path d="M 80 0 L 0 0 0 80" fill="none" stroke="rgb(17 24 39 / 0.5)" strokeWidth="1" />
-            </pattern>
-          </defs>
+        <svg className="w-full h-full">
+          <pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse">
+            <path d="M80 0V80H0" fill="none" className="stroke-current" strokeWidth="1" />
+          </pattern>
           <rect width="100%" height="100%" fill="url(#grid)" />
         </svg>
       </motion.div>
 
       {/* Progress bar */}
-      <motion.div 
+      <motion.div
         style={{ scaleX }}
-        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 origin-left z-50 backdrop-blur-sm shadow-xl"
+        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-400 to-indigo-500 origin-left z-50"
       />
 
       {/* Hero Section */}
-      <Section className="h-fit flex items-center justify-center">
-        <div className="container mx-auto px-4 text-center relative z-10">
+      <HolographicSection className="h-fit flex items-center">
+        <div className="text-center">
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            transition={{ type: 'spring', stiffness: 260, damping: 20 }}
-            className="mb-12"
+            className="mb-12 inline-block relative"
           >
-            <div className="w-48 h-48 mx-auto mb-8 rounded-full bg-gradient-to-br from-cyan-400 to-purple-600 flex items-center justify-center shadow-2xl relative">
-              <div className="absolute inset-0 rounded-full bg-cyan-400/30 animate-pulse blur-xl" />
-              <motion.div
-                animate={{ y: [0, -20, 0] }}
-                transition={{ duration: 6, repeat: Infinity }}
-                className="relative overflow-hidden rounded-full"
-              >
-                <img src="/pfp.jpeg" alt="Siddharth Sahu" className="w-40 h-40 rounded-full border-4 border-black/50" />
-                <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/20 to-purple-600/20 mix-blend-overlay" />
-              </motion.div>
+            <div className="relative w-48 h-48 mx-auto rounded-full bg-gradient-to-br from-emerald-400 to-indigo-500 p-1 shadow-2xl">
+              <div className="absolute inset-0 rounded-full animate-spin-slow [background:conic-gradient(rgba(110,231,183,0.4),transparent)]" />
+              <motion.img
+                src="/pfp.jpeg"
+                alt="Siddharth Sahu"
+                className="w-full h-full rounded-full border-4 border-gray-900/80 backdrop-blur-xl"
+                animate={{
+                  y: [0, -20, 0],
+                }}
+                transition={{
+                  duration: 6,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              />
+              <div className="absolute inset-0 rounded-full border border-emerald-400/30 animate-pulse" />
             </div>
           </motion.div>
 
-          <motion.h1 
-            initial={{ opacity: 0, y: -40 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-6xl md:text-7xl font-black mb-6"
-          >
-            <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-              Siddharth Sahu
-            </span>
-          </motion.h1>
-
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
-            className="flex flex-wrap justify-center gap-4 mb-12"
-          >
-            {['Full Stack Dev', 'Mern Stack Developer', 'DevOps'].map((text, i) => (
-              <motion.div
-                key={i}
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.5 + i * 0.2 }}
-                className="px-6 py-2 bg-gray-800/50 rounded-full backdrop-blur-sm border border-gray-700/50"
-              >
-                <span className="bg-gradient-to-r from-cyan-300 to-purple-300 bg-clip-text text-transparent text-sm md:text-base">
-                  {text}
-                </span>
-              </motion.div>
-            ))}
-          </motion.div>
-
-          <motion.div 
+          <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="flex justify-center gap-6"
+            className="text-6xl md:text-7xl font-extrabold mb-6"
           >
-            {[
-              { icon: Github, link: 'https://github.com/siddharth-200231' },
-              { icon: Mail, link: 'sahusidd715@gmail.com' },
-              { icon: Linkedin, link: 'https://www.linkedin.com/in/siddharth-sahu-40aa57289/' },
-              { icon: Code2, link: 'https://leetcode.com/u/siddharth_123456/' },
-            ].map((item, index) => (
-              <MagneticButton key={index}>
+            <GlitchText>Siddharth Sahu</GlitchText>
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-xl text-gray-400 mb-8 max-w-2xl mx-auto"
+          >
+            Full Stack Architect crafting immersive digital experiences through innovative code and modern design.
+          </motion.p>
+
+          <div className="flex justify-center gap-6 mb-8">
+            {[Github, Mail, Linkedin, Code2].map((Icon, i) => (
+              <CyberButton key={i}>
                 <motion.a
                   whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  href={item.link}
-                  className="p-4 bg-gray-800/50 rounded-2xl border border-gray-700/50 hover:border-cyan-400/50 backdrop-blur-xl transition-all group"
+                  className="p-4 bg-gray-800/50 rounded-xl border border-gray-700 backdrop-blur-lg block"
                 >
-                  <item.icon className="text-gray-400 group-hover:text-cyan-400 transition-colors" size={28} />
+                  <Icon className="text-gray-300 h-8 w-8" />
                 </motion.a>
-              </MagneticButton>
+              </CyberButton>
             ))}
-          </motion.div>
+          </div>
 
           {/* Download CV Button */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7 }}
-            className="mt-12"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
           >
-            <a
-              href="/siddcv.pdf" // Replace with your CV path
-              download="Siddharth_Sahu_CV.pdf"
-              className="inline-flex items-center px-8 py-3 bg-gradient-to-r from-cyan-400 to-purple-600 rounded-full text-white font-medium hover:from-cyan-500 hover:to-purple-700 transition-all"
-            >
-              <Download className="mr-2" size={20} />
-              Download CV
-            </a>
+            <CyberButton className="mx-auto">
+              <motion.a
+                whileHover={{ scale: 1.05 }}
+                className="px-8 py-4 bg-gradient-to-r from-emerald-400/20 to-indigo-400/20 rounded-xl backdrop-blur-lg flex items-center gap-2"
+                href="/siddcv.pdf"
+              >
+                <Download className="text-emerald-400" />
+                <span className="bg-gradient-to-r from-emerald-400 to-indigo-400 bg-clip-text text-transparent font-semibold">
+                  Download CV
+                </span>
+              </motion.a>
+            </CyberButton>
           </motion.div>
-        </div>
 
-        {/* Animated floating particles */}
-        {[...Array(30)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute rounded-full bg-gradient-to-r from-cyan-400/30 to-purple-400/30"
-            initial={{
-              scale: 0,
-              x: Math.random() * 100 - 50,
-              y: Math.random() * 100 - 50,
-            }}
-            animate={{
-              scale: [0, Math.random() * 0.5 + 0.3, 0],
-              x: [0, Math.random() * 400 - 200, 0],
-              y: [0, Math.random() * 400 - 200, 0],
-            }}
-            transition={{
-              duration: 10 + Math.random() * 10,
-              repeat: Infinity,
-              ease: 'easeInOut',
-            }}
-            style={{
-              width: `${Math.random() * 10 + 5}px`,
-              height: `${Math.random() * 10 + 5}px`,
-            }}
-          />
-        ))}
-      </Section>
-
-      {/* Education & Experience Section */}
-      <Section className="relative">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
-            {/* Education */}
-            <motion.div 
-              whileHover={{ y: -5 }}
-              className="p-8 bg-gray-800/50 backdrop-blur-2xl rounded-2xl border border-gray-700/50 hover:border-cyan-400/30 transition-all"
-            >
-              <div className="flex items-center gap-4 mb-6">
-                <GraduationCap className="text-cyan-400" size={32} />
-                <h2 className="text-3xl font-bold text-gray-100">Education</h2>
-              </div>
-              <div className="space-y-6">
-                <div className="pb-6 border-b border-gray-700/50">
-                  <h3 className="text-xl font-semibold text-gray-100">Siksha 'O' Anusandhan University</h3>
-                  <p className="text-gray-400 mt-2">B.Tech in Computer Science</p>
-                  <p className="text-cyan-400 font-medium mt-2">CGPA: 8.18</p>
-                  <p className="text-gray-500 text-sm mt-2">2021 - 2025</p>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Experience */}
-            <motion.div 
-              whileHover={{ y: -5 }}
-              className="p-8 bg-gray-800/50 backdrop-blur-2xl rounded-2xl border border-gray-700/50 hover:border-purple-400/30 transition-all"
-            >
-              <div className="flex items-center gap-4 mb-6">
-                <Briefcase className="text-purple-400" size={32} />
-                <h2 className="text-3xl font-bold text-gray-100">Experience</h2>
-              </div>
-              <div className="space-y-6">
-                <div className="pb-6 border-b border-gray-700/50">
-                  <h3 className="text-xl font-semibold text-gray-100">Block Stars Pvt Ltd</h3>
-                  <p className="text-gray-400 mt-2">Full Stack Developer</p>
-                  <div className="mt-4 space-y-3 text-gray-400">
-                    <p className="flex items-center gap-2">
-                      <span className="w-2 h-2 bg-cyan-400 rounded-full" />
-                      Designed responsive UI components
-                    </p>
-                    <p className="flex items-center gap-2">
-                      <span className="w-2 h-2 bg-cyan-400 rounded-full" />
-                      Optimized RESTful APIs integration
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
+          {/* Floating particles */}
+          <div className="absolute inset-0 pointer-events-none">
+            {[...Array(30)].map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute w-1 h-1 bg-emerald-400 rounded-full"
+                initial={{
+                  scale: 0,
+                  x: Math.random() * 100 - 50 + "%",
+                  y: Math.random() * 100 - 50 + "%",
+                }}
+                animate={{
+                  scale: [0, 1, 0],
+                  opacity: [0, 1, 0],
+                }}
+                transition={{
+                  duration: Math.random() * 3 + 2,
+                  repeat: Infinity,
+                  delay: Math.random() * 2,
+                }}
+              />
+            ))}
           </div>
         </div>
-      </Section>
+      </HolographicSection>
+
+      {/* Timeline Section */}
+      <HolographicSection>
+        <div className="relative max-w-6xl mx-auto">
+          <div className="absolute left-1/2 w-1 h-full bg-gradient-to-b from-emerald-400/20 to-indigo-400/20" />
+          {timelineData.map((item, i) => (
+            <motion.div
+              key={i}
+              className="relative mb-16 w-full"
+              initial={{ opacity: 0, x: i % 2 === 0 ? -100 : 100 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: i * 0.2 }}
+            >
+              <div className={`flex ${i % 2 === 0 ? "flex-row" : "flex-row-reverse"} items-center`}>
+                <div className="w-6 h-6 bg-emerald-400 rounded-full z-10" />
+                <div className="flex-1 p-8">
+                  <GlowingCard>
+                    <div className="flex items-center gap-4 mb-4">
+                      {item.icon}
+                      <h3 className="text-2xl font-bold text-gray-100">{item.title}</h3>
+                    </div>
+                    <p className="text-gray-400 mb-2">{item.subtitle}</p>
+                    <p className="text-gray-500 text-sm mb-4">{item.date}</p>
+                    <p className="text-gray-400">{item.description}</p>
+                  </GlowingCard>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </HolographicSection>
 
       {/* Skills Section */}
-      <Section className="relative bg-gradient-to-br from-gray-900/50 to-gray-800/50">
-        <div className="container mx-auto px-4">
-          <motion.h2 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-4xl font-bold text-center mb-16 bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent"
-          >
-            Technical Arsenal
-          </motion.h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            {[
-              { icon: Code, title: "Languages", skills: ['JavaScript', 'Java', 'Python'] },
-              { icon: Globe, title: "Frontend", skills: ['React', 'Next.js', 'Tailwind CSS'] },
-              { icon: Terminal, title: "Backend", skills: ['Node.js', 'Express.js', 'REST APIs'] },
-              { icon: Database, title: "Databases", skills: ['MongoDB', 'MySQL'] },
-              { icon: Code2, title: "DevOps", skills: ['Git', 'GitHub', 'Vercel'] },
-              { icon: Terminal, title: "ML", skills: ['Scikit-learn', 'Pandas', 'Numpy'] }
-            ].map((skill, index) => (
-              <SkillCard key={index} {...skill} />
-            ))}
-          </div>
+      <HolographicSection>
+        <h2 className="text-4xl font-bold text-center mb-16">
+          <span className="bg-gradient-to-r from-emerald-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent">
+            Technical Expertise
+          </span>
+        </h2>
+
+        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          {skillsData.map((skill, i) => (
+            <GlowingCard key={i}>
+              <div className="flex items-center gap-4 mb-6">
+                <div className="p-3 bg-gradient-to-br from-emerald-400/20 to-indigo-400/20 rounded-lg">
+                  <Code className="text-emerald-400" size={24} />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-100">{skill.title}</h3>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {skill.skills.map((item, j) => (
+                  <motion.span
+                    key={j}
+                    className="px-3 py-1.5 bg-gray-800/50 rounded-full text-sm text-emerald-300 backdrop-blur-sm"
+                  >
+                    {item}
+                  </motion.span>
+                ))}
+              </div>
+            </GlowingCard>
+          ))}
         </div>
-      </Section>
+      </HolographicSection>
 
       {/* Projects Section */}
-      <Section className="relative">
-        <div className="container mx-auto px-4">
-          <motion.h2 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-4xl font-bold text-center mb-16 bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent"
-          >
-            Key Projects
-          </motion.h2>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-6xl mx-auto">
-            <ProjectCard
-              icon={Car}
-              title="GoCabs"
-              description="Real-time cab booking platform with live tracking and instant updates."
-              tech={['React', 'Node.js', 'WebSockets', 'MongoDB']}
-            />
-            <ProjectCard
-              icon={Heart}
-              title="Heart Disease Detector"
-              description="ML model predicting heart disease with 84% accuracy using Random Forest."
-              tech={['Python', 'Pandas', 'Scikit-learn']}
-            />
-          </div>
+      <HolographicSection className="bg-gradient-to-br from-gray-900/50 to-indigo-900/20">
+        <h2 className="text-4xl font-bold text-center mb-16">
+          <span className="bg-gradient-to-r from-indigo-400 to-emerald-400 bg-clip-text text-transparent">
+            Featured Projects
+          </span>
+        </h2>
+
+        <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+          {projectsData.map((project, i) => (
+            <GlowingCard key={i}>
+              <div className="flex items-center gap-4 mb-6">
+                {project.icon}
+                <h3 className="text-2xl font-bold text-gray-100">{project.title}</h3>
+              </div>
+              <p className="text-gray-400 mb-6">{project.description}</p>
+              <div className="flex flex-wrap gap-2">
+                {project.technologies.map((tech, j) => (
+                  <span
+                    key={j}
+                    className="px-3 py-1 bg-indigo-400/10 text-indigo-300 rounded-full text-sm"
+                  >
+                    {tech}
+                  </span>
+                ))}
+              </div>
+            </GlowingCard>
+          ))}
         </div>
-      </Section>
+      </HolographicSection>
 
       {/* Footer */}
-      <footer className="bg-gradient-to-br from-black/80 to-gray-900/50 py-12 border-t border-gray-800 backdrop-blur-2xl">
+      <footer className="relative border-t border-gray-800/50 py-12 backdrop-blur-2xl">
         <div className="container mx-auto px-4 text-center">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            className="flex justify-center space-x-8 mb-8"
-          >
-            {[Github, Mail, Linkedin].map((Icon, index) => (
-              <motion.a
-                key={index}
-                whileHover={{ y: -5, scale: 1.2 }}
-                whileTap={{ scale: 0.9 }}
-                href="#"
-                className="p-3 bg-gray-900/50 rounded-full backdrop-blur-lg hover:bg-cyan-400/20 transition-all border border-gray-800/50 hover:border-cyan-400/30"
-              >
-                <Icon className="text-gray-400 hover:text-cyan-400 transition-colors" size={24} />
-              </motion.a>
-            ))}
-          </motion.div>
-          <p className="text-gray-500 text-sm">
-            © {new Date().getFullYear()} Siddharth Sahu. Crafted with <span className="text-cyan-400">passion</span> in the dark.
+          <div className="flex justify-center gap-6 mb-8">
+            <motion.a
+              whileHover={{ y: -5 }}
+              href="#"
+              className="text-gray-400 hover:text-emerald-400 transition-colors"
+            >
+              <Github size={24} />
+            </motion.a>
+            <motion.a
+              whileHover={{ y: -5 }}
+              href="#"
+              className="text-gray-400 hover:text-indigo-400 transition-colors"
+            >
+              <Linkedin size={24} />
+            </motion.a>
+            <motion.a
+              whileHover={{ y: -5 }}
+              href="#"
+              className="text-gray-400 hover:text-purple-400 transition-colors"
+            >
+              <Mail size={24} />
+            </motion.a>
+          </div>
+          <p className="text-gray-600">
+            © {new Date().getFullYear()} Siddharth Sahu. Built with{" "}
+            <span className="text-emerald-400">innovation</span>
           </p>
         </div>
       </footer>
-    </div>
+    </motion.div>
   );
 }
 
