@@ -3,10 +3,10 @@ import { motion, useScroll, useTransform, useMotionTemplate, useMotionValue } fr
 import { useInView } from 'react-intersection-observer';
 import { Github, Mail, Linkedin, Code2, GraduationCap, Briefcase, Heart, Car, Code, Database, Terminal, Globe, Download } from 'lucide-react';
 
-// Noise texture SVG pattern
-const noiseTexture = `url("data:image/svg+xml,%3Csvg viewBox='0 0 1024 1024' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`;
+// Noise texture for subtle background effects
+const noiseTexture = `url("data:image/svg+xml,%3Csvg viewBox='0 0 1024 1024' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`;
 
-// Magnetic interaction component
+// Magnetic button component for interactive hover effects
 const MagneticButton = ({ children, className }: { children: React.ReactNode; className?: string }) => {
   const ref = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
@@ -32,7 +32,8 @@ const MagneticButton = ({ children, className }: { children: React.ReactNode; cl
       style={{ x, y }}
       onMouseMove={handleMouse}
       onMouseLeave={reset}
-      whileHover={{ scale: 1.05 }}
+      whileHover={{ scale: 1.1 }}
+      transition={{ type: "spring", stiffness: 300, damping: 20 }}
       className={`relative cursor-pointer ${className}`}
     >
       {children}
@@ -40,11 +41,11 @@ const MagneticButton = ({ children, className }: { children: React.ReactNode; cl
   );
 };
 
-// Hover glow effect component
+// Hover glow effect for interactive elements
 const HoverGlow = () => {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
-  
+
   const handleMouseMove = ({ clientX, clientY, currentTarget }: React.MouseEvent) => {
     const { left, top } = currentTarget.getBoundingClientRect();
     mouseX.set(clientX - left);
@@ -54,19 +55,21 @@ const HoverGlow = () => {
   return (
     <motion.div
       onMouseMove={handleMouseMove}
-      className="absolute inset-0 pointer-events-none"
+      className="absolute inset-0 pointer-events-none overflow-hidden"
     >
       <motion.div
-        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
         style={{
-          background: useMotionTemplate`radial-gradient(600px at ${mouseX}px ${mouseY}px, rgba(34,211,238,0.1), transparent 80%)`
+          background: useMotionTemplate`radial-gradient(600px circle at ${mouseX}px ${mouseY}px, 
+            rgba(34, 211, 238, 0.15),
+            transparent 80%)`
         }}
       />
     </motion.div>
   );
 };
 
-// Animated section wrapper
+// Section wrapper with entrance animations
 const Section = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => {
   const [ref, inView] = useInView({
     triggerOnce: true,
@@ -81,26 +84,32 @@ const Section = ({ children, className = '' }: { children: React.ReactNode; clas
       transition={{ duration: 0.8, type: 'spring' }}
       className={`py-20 relative ${className}`}
     >
+      <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-transparent pointer-events-none" />
       <HoverGlow />
       {children}
     </motion.section>
   );
 };
 
-// Skill card component
+// Skill card component with hover animations
 const SkillCard = ({ icon: Icon, title, skills }: { icon: any; title: string; skills: string[] }) => {
   return (
     <motion.div 
+      initial={{ opacity: 0, scale: 0.9 }}
+      whileInView={{ opacity: 1, scale: 1 }}
+      viewport={{ once: true }}
       whileHover={{ y: -10 }}
-      className="bg-gradient-to-br from-gray-800/30 to-gray-900/50 backdrop-blur-2xl rounded-2xl p-6 border border-gray-700/50 hover:border-cyan-400/30 transition-all relative group overflow-hidden"
+      transition={{ duration: 0.4, type: 'spring' }}
+      className="group relative bg-gradient-to-br from-gray-900/80 to-black/60 backdrop-blur-3xl rounded-2xl p-6 border border-gray-800 hover:border-cyan-400/20 transition-all duration-300 shadow-2xl"
     >
-      <div className="absolute inset-0 opacity-10 mix-blend-soft-light" style={{ background: noiseTexture }} />
+      <div className="absolute inset-0 opacity-30 mix-blend-overlay" style={{ background: noiseTexture }} />
+      <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
       <div className="relative z-10">
         <div className="flex items-center gap-3 mb-5">
           <motion.div 
             animate={{ rotate: [0, 15, -5, 0] }}
-            transition={{ duration: 2, repeat: Infinity }}
-            className="p-3 bg-gradient-to-br from-cyan-400 to-purple-600 rounded-lg"
+            transition={{ duration: 4, repeat: Infinity }}
+            className="p-3 bg-gradient-to-br from-cyan-400/90 to-purple-600/90 rounded-lg shadow-lg"
           >
             <Icon className="text-white" size={24} />
           </motion.div>
@@ -108,14 +117,14 @@ const SkillCard = ({ icon: Icon, title, skills }: { icon: any; title: string; sk
             {title}
           </h3>
         </div>
-        <ul className="grid grid-cols-2 gap-3">
+        <ul className="grid grid-cols-2 gap-2">
           {skills.map((skill, index) => (
             <motion.li 
               key={index}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: index * 0.1 }}
-              className="px-4 py-2 bg-gray-700/30 rounded-full text-sm font-medium text-gray-300 hover:bg-cyan-400/10 hover:text-cyan-300 transition-colors backdrop-blur-sm"
+              className="px-3 py-2 bg-gray-900/50 rounded-full text-sm font-medium text-gray-300 hover:bg-cyan-400/10 hover:text-cyan-300 transition-all duration-300 backdrop-blur-sm border border-gray-800/50 hover:border-cyan-400/30"
             >
               {skill}
             </motion.li>
@@ -126,31 +135,58 @@ const SkillCard = ({ icon: Icon, title, skills }: { icon: any; title: string; sk
   );
 };
 
-// Project card component
+// Project card component with dynamic hover effects
 const ProjectCard = ({ title, description, tech, icon: Icon }: { title: string; description: string; tech: string[]; icon: any }) => {
+  const hoverX = useMotionValue(0);
+  const hoverY = useMotionValue(0);
+
+  const handleHover = ({ clientX, clientY, currentTarget }: React.MouseEvent) => {
+    const rect = currentTarget.getBoundingClientRect();
+    hoverX.set(clientX - rect.left);
+    hoverY.set(clientY - rect.top);
+  };
+
   return (
     <motion.div 
-      whileHover={{ scale: 1.02 }}
-      className="group relative bg-gradient-to-br from-gray-800/30 to-gray-900/50 backdrop-blur-2xl rounded-2xl p-8 border border-gray-700/50 hover:border-cyan-400/30 transition-all overflow-hidden"
+      onMouseMove={handleHover}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      whileHover={{ scale: 1.03 }}
+      transition={{ duration: 0.4, type: 'spring' }}
+      className="group relative bg-gradient-to-br from-gray-900/80 to-black/60 backdrop-blur-3xl rounded-2xl p-8 border border-gray-800 hover:border-cyan-400/20 transition-all duration-300 shadow-2xl overflow-hidden"
     >
-      <div className="absolute inset-0 opacity-10 mix-blend-soft-light" style={{ background: noiseTexture }} />
+      <div className="absolute inset-0 opacity-30 mix-blend-overlay" style={{ background: noiseTexture }} />
+      <motion.div
+        className="absolute -inset-px bg-gradient-radial from-cyan-400/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+        style={{
+          x: hoverX,
+          y: hoverY,
+          background: useMotionTemplate`radial-gradient(300px circle at ${hoverX}px ${hoverY}px, 
+            rgba(34, 211, 238, 0.1),
+            transparent 80%)`
+        }}
+      />
       <div className="relative z-10">
         <div className="flex items-center gap-4 mb-6">
           <motion.div 
             whileHover={{ rotate: 12 }}
-            className="p-4 bg-gradient-to-br from-cyan-400 to-purple-600 rounded-xl"
+            className="p-4 bg-gradient-to-br from-cyan-400/90 to-purple-600/90 rounded-xl shadow-lg"
           >
             <Icon className="text-white" size={28} />
           </motion.div>
           <h3 className="text-2xl font-bold text-gray-100">{title}</h3>
         </div>
         <p className="text-gray-400 mb-6 leading-relaxed">{description}</p>
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-2">
           {tech.map((t, index) => (
             <motion.span 
               key={index}
-              whileHover={{ scale: 1.05 }}
-              className="px-4 py-2 bg-gray-700/30 rounded-full text-sm font-medium text-cyan-300 hover:bg-cyan-400/10 transition-colors backdrop-blur-sm"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: index * 0.1 }}
+              whileHover={{ scale: 1.1 }}
+              className="px-3 py-1.5 bg-gray-900/50 rounded-full text-sm font-medium text-cyan-300 hover:bg-cyan-400/10 transition-all duration-300 backdrop-blur-sm border border-gray-800/50 hover:border-cyan-400/30"
             >
               {t}
             </motion.span>
@@ -161,23 +197,24 @@ const ProjectCard = ({ title, description, tech, icon: Icon }: { title: string; 
   );
 };
 
+// Main App component
 function App() {
   const { scrollYProgress } = useScroll();
   const scaleX = useTransform(scrollYProgress, [0, 1], [0, 1]);
-  const rotate = useTransform(scrollYProgress, [0, 1], [0, 5]);
-  const y = useTransform(scrollYProgress, [0, 1], [0, -100]);
+  const rotate = useTransform(scrollYProgress, [0, 1], [0, 15]);
+  const y = useTransform(scrollYProgress, [0, 1], [0, -200]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
-      {/* Animated grid background */}
+    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950">
+      {/* Dynamic grid background */}
       <motion.div 
-        style={{ rotate }}
-        className="fixed inset-0 opacity-20 mix-blend-soft-light"
+        style={{ rotate, y }}
+        className="fixed inset-0 opacity-10 mix-blend-overlay pointer-events-none"
       >
         <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgb(55 65 81 / 0.5)" strokeWidth="0.5" />
+            <pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse">
+              <path d="M 80 0 L 0 0 0 80" fill="none" stroke="rgb(17 24 39 / 0.5)" strokeWidth="1" />
             </pattern>
           </defs>
           <rect width="100%" height="100%" fill="url(#grid)" />
@@ -187,10 +224,10 @@ function App() {
       {/* Progress bar */}
       <motion.div 
         style={{ scaleX }}
-        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 origin-left z-50 backdrop-blur-sm"
+        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 origin-left z-50 backdrop-blur-sm shadow-xl"
       />
 
-      {/* Hero section */}
+      {/* Hero Section */}
       <Section className="h-fit flex items-center justify-center">
         <div className="container mx-auto px-4 text-center relative z-10">
           <motion.div
@@ -204,9 +241,10 @@ function App() {
               <motion.div
                 animate={{ y: [0, -20, 0] }}
                 transition={{ duration: 6, repeat: Infinity }}
-                className="text-5xl text-white font-bold"
+                className="relative overflow-hidden rounded-full"
               >
-                <img src="/pfp.jpeg" alt="Siddharth Sahu" className="w-40 h-40 rounded-full" />
+                <img src="/pfp.jpeg" alt="Siddharth Sahu" className="w-40 h-40 rounded-full border-4 border-black/50" />
+                <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/20 to-purple-600/20 mix-blend-overlay" />
               </motion.div>
             </div>
           </motion.div>
@@ -285,8 +323,8 @@ function App() {
           </motion.div>
         </div>
 
-        {/* Floating particles */}
-        {[...Array(20)].map((_, i) => (
+        {/* Animated floating particles */}
+        {[...Array(30)].map((_, i) => (
           <motion.div
             key={i}
             className="absolute rounded-full bg-gradient-to-r from-cyan-400/30 to-purple-400/30"
@@ -296,12 +334,12 @@ function App() {
               y: Math.random() * 100 - 50,
             }}
             animate={{
-              scale: [0, 1, 0],
-              x: [0, Math.random() * 200 - 100, 0],
-              y: [0, Math.random() * 200 - 100, 0],
+              scale: [0, Math.random() * 0.5 + 0.3, 0],
+              x: [0, Math.random() * 400 - 200, 0],
+              y: [0, Math.random() * 400 - 200, 0],
             }}
             transition={{
-              duration: 5 + Math.random() * 5,
+              duration: 10 + Math.random() * 10,
               repeat: Infinity,
               ease: 'easeInOut',
             }}
@@ -419,7 +457,7 @@ function App() {
       </Section>
 
       {/* Footer */}
-      <footer className="bg-gradient-to-br from-gray-900 to-gray-800 py-12 border-t border-gray-700/50">
+      <footer className="bg-gradient-to-br from-black/80 to-gray-900/50 py-12 border-t border-gray-800 backdrop-blur-2xl">
         <div className="container mx-auto px-4 text-center">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
@@ -429,16 +467,17 @@ function App() {
             {[Github, Mail, Linkedin].map((Icon, index) => (
               <motion.a
                 key={index}
-                whileHover={{ y: -5, scale: 1.1 }}
+                whileHover={{ y: -5, scale: 1.2 }}
+                whileTap={{ scale: 0.9 }}
                 href="#"
-                className="p-3 bg-gray-700/50 rounded-full backdrop-blur-lg hover:bg-cyan-400/20 transition-all"
+                className="p-3 bg-gray-900/50 rounded-full backdrop-blur-lg hover:bg-cyan-400/20 transition-all border border-gray-800/50 hover:border-cyan-400/30"
               >
                 <Icon className="text-gray-400 hover:text-cyan-400 transition-colors" size={24} />
               </motion.a>
             ))}
           </motion.div>
           <p className="text-gray-500 text-sm">
-            © {new Date().getFullYear()} Siddharth Sahu. Crafted with <span className="text-cyan-400">innovation</span> and React.
+            © {new Date().getFullYear()} Siddharth Sahu. Crafted with <span className="text-cyan-400">passion</span> in the dark.
           </p>
         </div>
       </footer>
