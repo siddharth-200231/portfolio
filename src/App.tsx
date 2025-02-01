@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import {
   motion,
   useScroll,
@@ -6,6 +6,7 @@ import {
   useMotionTemplate,
   useMotionValue,
   useSpring,
+  useAnimation,
 } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import {
@@ -19,6 +20,8 @@ import {
   Car,
   Code,
   Download,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 
 // Define timeline data
@@ -28,14 +31,14 @@ const timelineData = [
     title: "Bachelor of Technology – Computer Science and Engineering",
     subtitle: "Siksha ’O’ Anusandhan University (ITER)",
     description: "CGPA: 8.18 | Bhubaneswar, Odisha",
-    icon: <GraduationCap className="text-emerald-400" size={24} />,
+    icon: <GraduationCap className="text-blue-400" size={24} />,
   },
   {
     date: "Nov 2024 - Jan 2025",
     title: "Full Stack Developer",
     subtitle: "Block Stars Pvt Ltd",
     description: "Remote | Designed and implemented reusable UI components and responsive web pages.",
-    icon: <Briefcase className="text-indigo-400" size={24} />,
+    icon: <Briefcase className="text-purple-400" size={24} />,
   },
 ];
 
@@ -73,13 +76,19 @@ const projectsData = [
     title: "GoCabs",
     description: "Real-time cab booking platform with live tracking",
     technologies: ["React", "Node.js", "WebSockets"],
-    icon: <Car className="text-indigo-400" size={32} />,
+    icon: <Car className="text-purple-400" size={32} />,
   },
   {
     title: "Health AI",
     description: "Machine learning model for disease prediction",
     technologies: ["Python", "TensorFlow", "Pandas"],
-    icon: <Heart className="text-emerald-400" size={32} />,
+    icon: <Heart className="text-blue-400" size={32} />,
+  },
+  {
+    title: "E-Commerce Platform",
+    description: "Full-stack e-commerce solution with payment integration",
+    technologies: ["Next.js", "Stripe", "MongoDB"],
+    icon: <Code2 className="text-pink-400" size={32} />,
   },
 ];
 
@@ -114,13 +123,13 @@ const CyberButton = ({ children, className }: { children: React.ReactNode; class
           x: springX,
           y: springY,
           background: useMotionTemplate`radial-gradient(120px circle at ${springX}px ${springY}px, 
-            rgba(110, 231, 183, 0.4),
+            rgba(99, 102, 241, 0.4),
             transparent 80%)`,
         }}
         className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-300"
       />
       <div className="relative z-10">{children}</div>
-      <div className="absolute inset-0 border border-emerald-400/30 hover:border-emerald-400/50 transition-all duration-500 rounded-xl" />
+      <div className="absolute inset-0 border border-blue-400/30 hover:border-blue-400/50 transition-all duration-500 rounded-xl" />
     </motion.div>
   );
 };
@@ -144,13 +153,13 @@ const HolographicSection = ({ children, className = "" }: { children: React.Reac
           background: useMotionTemplate`
             conic-gradient(
               from 230.29deg at 51.63% 52.16%,
-              hsl(160, 60%, 50%) 0deg,
-              hsl(180, 100%, 50%) 60deg,
-              hsl(200, 100%, 50%) 120deg,
-              hsl(220, 100%, 50%) 180deg,
-              hsl(240, 100%, 50%) 240deg,
-              hsl(260, 100%, 50%) 300deg,
-              hsl(160, 60%, 50%) 360deg
+              hsl(220, 100%, 50%) 0deg,
+              hsl(240, 100%, 50%) 60deg,
+              hsl(260, 100%, 50%) 120deg,
+              hsl(280, 100%, 50%) 180deg,
+              hsl(300, 100%, 50%) 240deg,
+              hsl(320, 100%, 50%) 300deg,
+              hsl(220, 100%, 50%) 360deg
             )
           `,
           filter: `blur(80px)`,
@@ -194,7 +203,7 @@ const GlowingCard = ({ children }: { children: React.ReactNode }) => {
         className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
         style={{
           background: useMotionTemplate`radial-gradient(400px circle at ${mouseX}px ${mouseY}px, 
-            rgba(110, 231, 183, 0.1),
+            rgba(99, 102, 241, 0.1),
             transparent 80%)`,
         }}
       />
@@ -221,7 +230,7 @@ function App() {
   const GlitchText = ({ children }: { children: string }) => (
     <div className="relative inline-block">
       <motion.span
-        className="absolute inset-0 bg-gradient-to-r from-emerald-400 via-indigo-400 to-purple-400 bg-clip-text opacity-40"
+        className="absolute inset-0 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text opacity-40"
         animate={{
           x: [-2, 2, -2, 2, 0],
           y: [1, -1, 1, -1, 0],
@@ -233,7 +242,7 @@ function App() {
       >
         {children}
       </motion.span>
-      <span className="relative bg-gradient-to-r from-emerald-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent">
+      <span className="relative bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
         {children}
       </span>
     </div>
@@ -257,7 +266,7 @@ function App() {
       {/* Progress bar */}
       <motion.div
         style={{ scaleX }}
-        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-400 to-indigo-500 origin-left z-50"
+        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-400 to-purple-500 origin-left z-50"
       />
 
       {/* Hero Section */}
@@ -268,8 +277,8 @@ function App() {
             animate={{ scale: 1 }}
             className="mb-12 inline-block relative"
           >
-            <div className="relative w-48 h-48 mx-auto rounded-full bg-gradient-to-br from-emerald-400 to-indigo-500 p-1 shadow-2xl">
-              <div className="absolute inset-0 rounded-full animate-spin-slow [background:conic-gradient(rgba(110,231,183,0.4),transparent)]" />
+            <div className="relative w-48 h-48 mx-auto rounded-full bg-gradient-to-br from-blue-400 to-purple-500 p-1 shadow-2xl">
+              <div className="absolute inset-0 rounded-full animate-spin-slow [background:conic-gradient(rgba(99,102,241,0.4),transparent)]" />
               <motion.img
                 src="/pfp.jpeg"
                 alt="Siddharth Sahu"
@@ -283,7 +292,7 @@ function App() {
                   ease: "easeInOut",
                 }}
               />
-              <div className="absolute inset-0 rounded-full border border-emerald-400/30 animate-pulse" />
+              <div className="absolute inset-0 rounded-full border border-blue-400/30 animate-pulse" />
             </div>
           </motion.div>
 
@@ -325,11 +334,11 @@ function App() {
             <CyberButton className="mx-auto">
               <motion.a
                 whileHover={{ scale: 1.05 }}
-                className="px-8 py-4 bg-gradient-to-r from-emerald-400/20 to-indigo-400/20 rounded-xl backdrop-blur-lg flex items-center gap-2"
+                className="px-8 py-4 bg-gradient-to-r from-blue-400/20 to-purple-400/20 rounded-xl backdrop-blur-lg flex items-center gap-2"
                 href="/siddcv.pdf"
               >
-                <Download className="text-emerald-400" />
-                <span className="bg-gradient-to-r from-emerald-400 to-indigo-400 bg-clip-text text-transparent font-semibold">
+                <Download className="text-blue-400" />
+                <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent font-semibold">
                   Download CV
                 </span>
               </motion.a>
@@ -341,7 +350,7 @@ function App() {
             {[...Array(30)].map((_, i) => (
               <motion.div
                 key={i}
-                className="absolute w-1 h-1 bg-emerald-400 rounded-full"
+                className="absolute w-1 h-1 bg-blue-400 rounded-full"
                 initial={{
                   scale: 0,
                   x: Math.random() * 100 - 50 + "%",
@@ -365,7 +374,7 @@ function App() {
       {/* Timeline Section */}
       <HolographicSection>
         <div className="relative max-w-6xl mx-auto">
-          <div className="absolute left-1/2 w-1 h-full bg-gradient-to-b from-emerald-400/20 to-indigo-400/20" />
+          <div className="absolute left-1/2 w-1 h-full bg-gradient-to-b from-blue-400/20 to-purple-400/20" />
           {timelineData.map((item, i) => (
             <motion.div
               key={i}
@@ -375,7 +384,7 @@ function App() {
               transition={{ delay: i * 0.2 }}
             >
               <div className={`flex ${i % 2 === 0 ? "flex-row" : "flex-row-reverse"} items-center`}>
-                <div className="w-6 h-6 bg-emerald-400 rounded-full z-10" />
+                <div className="w-6 h-6 bg-blue-400 rounded-full z-10" />
                 <div className="flex-1 p-8">
                   <GlowingCard>
                     <div className="flex items-center gap-4 mb-4">
@@ -396,7 +405,7 @@ function App() {
       {/* Skills Section */}
       <HolographicSection>
         <h2 className="text-4xl font-bold text-center mb-16">
-          <span className="bg-gradient-to-r from-emerald-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
             Technical Expertise
           </span>
         </h2>
@@ -405,8 +414,8 @@ function App() {
           {skillsData.map((skill, i) => (
             <GlowingCard key={i}>
               <div className="flex items-center gap-4 mb-6">
-                <div className="p-3 bg-gradient-to-br from-emerald-400/20 to-indigo-400/20 rounded-lg">
-                  <Code className="text-emerald-400" size={24} />
+                <div className="p-3 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-lg">
+                  <Code className="text-blue-400" size={24} />
                 </div>
                 <h3 className="text-2xl font-bold text-gray-100">{skill.title}</h3>
               </div>
@@ -414,7 +423,7 @@ function App() {
                 {skill.skills.map((item, j) => (
                   <motion.span
                     key={j}
-                    className="px-3 py-1.5 bg-gray-800/50 rounded-full text-sm text-emerald-300 backdrop-blur-sm"
+                    className="px-3 py-1.5 bg-gray-800/50 rounded-full text-sm text-blue-300 backdrop-blur-sm"
                   >
                     {item}
                   </motion.span>
@@ -426,65 +435,68 @@ function App() {
       </HolographicSection>
 
       {/* Projects Section */}
-      <HolographicSection className="bg-gradient-to-br from-gray-900/50 to-indigo-900/20">
+      <HolographicSection className="bg-gradient-to-br from-gray-900/50 to-purple-900/20">
         <h2 className="text-4xl font-bold text-center mb-16">
-          <span className="bg-gradient-to-r from-indigo-400 to-emerald-400 bg-clip-text text-transparent">
+        <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
             Featured Projects
           </span>
         </h2>
 
-        <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
-          {projectsData.map((project, i) => (
-            <GlowingCard key={i}>
-              <div className="flex items-center gap-4 mb-6">
-                {project.icon}
-                <h3 className="text-2xl font-bold text-gray-100">{project.title}</h3>
-              </div>
-              <p className="text-gray-400 mb-6">{project.description}</p>
-              <div className="flex flex-wrap gap-2">
-                {project.technologies.map((tech, j) => (
-                  <span
-                    key={j}
-                    className="px-3 py-1 bg-indigo-400/10 text-indigo-300 rounded-full text-sm"
-                  >
-                    {tech}
-                  </span>
-                ))}
-              </div>
-            </GlowingCard>
-          ))}
+        {/* Projects Carousel */}
+        <div className="relative max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 gap-8">
+            {projectsData.map((project, i) => (
+              <GlowingCard key={i}>
+                <div className="flex items-center gap-4 mb-6">
+                  {project.icon}
+                  <h3 className="text-2xl font-bold text-gray-100">{project.title}</h3>
+                </div>
+                <p className="text-gray-400 mb-6">{project.description}</p>
+                <div className="flex flex-wrap gap-2">
+                  {project.technologies.map((tech, j) => (
+                    <span
+                      key={j}
+                      className="px-3 py-1 bg-purple-400/10 text-purple-300 rounded-full text-sm"
+                    >
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+              </GlowingCard>
+            ))}
+          </div>
         </div>
       </HolographicSection>
 
-      {/* Footer */}
+      {/* Footer Section */}
       <footer className="relative border-t border-gray-800/50 py-12 backdrop-blur-2xl">
         <div className="container mx-auto px-4 text-center">
           <div className="flex justify-center gap-6 mb-8">
             <motion.a
               whileHover={{ y: -5 }}
               href="#"
-              className="text-gray-400 hover:text-emerald-400 transition-colors"
+              className="text-gray-400 hover:text-blue-400 transition-colors"
             >
               <Github size={24} />
             </motion.a>
             <motion.a
               whileHover={{ y: -5 }}
               href="#"
-              className="text-gray-400 hover:text-indigo-400 transition-colors"
+              className="text-gray-400 hover:text-purple-400 transition-colors"
             >
               <Linkedin size={24} />
             </motion.a>
             <motion.a
               whileHover={{ y: -5 }}
               href="#"
-              className="text-gray-400 hover:text-purple-400 transition-colors"
+              className="text-gray-400 hover:text-pink-400 transition-colors"
             >
               <Mail size={24} />
             </motion.a>
           </div>
           <p className="text-gray-600">
             © {new Date().getFullYear()} Siddharth Sahu. Built with{" "}
-            <span className="text-emerald-400">innovation</span>
+            <span className="text-blue-400">innovation</span>
           </p>
         </div>
       </footer>
