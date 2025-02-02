@@ -133,22 +133,24 @@ const GlowingCard = ({ children }: { children: React.ReactNode }) => {
       },
     });
 
-    // Hover effect
+    // Hover effect with 3D rotation
     gsap.to(cardRef.current, {
+      rotateX: 5,
+      rotateY: 5,
       scale: 1.05,
       duration: 0.3,
       ease: "power2.out",
       paused: true,
     });
 
-    cardRef.current?.addEventListener("mouseenter", () => gsap.to(cardRef.current, { scale: 1.05, duration: 0.3 }));
-    cardRef.current?.addEventListener("mouseleave", () => gsap.to(cardRef.current, { scale: 1, duration: 0.3 }));
+    cardRef.current?.addEventListener("mouseenter", () => gsap.to(cardRef.current, { rotateX: 5, rotateY: 5, scale: 1.05, duration: 0.3 }));
+    cardRef.current?.addEventListener("mouseleave", () => gsap.to(cardRef.current, { rotateX: 0, rotateY: 0, scale: 1, duration: 0.3 }));
   });
 
   return (
     <div
       ref={cardRef}
-      className="glowing-card group relative bg-black/80 backdrop-blur-2xl rounded-3xl border border-gray-800 p-8 shadow-2xl transition-transform duration-300 hover:border-white/50"
+      className="glowing-card group relative bg-black/80 backdrop-blur-2xl rounded-3xl border border-gray-800 p-8 shadow-2xl transition-transform duration-300 hover:border-white/50 will-change-transform"
     >
       {children}
     </div>
@@ -195,6 +197,17 @@ function App() {
       yoyo: true,
       ease: "sine.inOut",
     });
+
+    // Parallax effect for hero section
+    gsap.to(".hero-content", {
+      y: -50,
+      scrollTrigger: {
+        trigger: ".hero-content",
+        start: "top center",
+        end: "bottom center",
+        scrub: 1,
+      },
+    });
   }, { scope: container });
 
   return (
@@ -218,7 +231,7 @@ function App() {
 
       {/* Hero Section */}
       <HolographicSection className="h-fit flex items-center">
-        <div className="text-center">
+        <div className="text-center hero-content">
           <div className="mb-12 inline-block relative">
             <div className="relative w-48 h-48 mx-auto rounded-full overflow-hidden">
               <img
