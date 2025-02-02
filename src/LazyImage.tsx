@@ -1,9 +1,14 @@
-import React from 'react'
+import React from "react";
 
-const LazyImage = () => {
+const LazyImage = ({
+  src = "/pfp.jpeg",
+  alt = "Image",
+  className = "",
+  ...props
+}) => {
   return (
-    <img src="/pfp.jpeg" alt="" />
-  )
-}
+    <img src={src} alt={alt} loading="lazy" className={className} {...props} />
+  );
+};
 
-export default LazyImage
+export default LazyImage;
