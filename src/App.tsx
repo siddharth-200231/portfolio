@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, lazy, Suspense } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -17,6 +17,9 @@ import {
 
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger, useGSAP);
+
+// Lazy load heavy components
+const LazyImage = lazy(() => import("./LazyImage"));
 
 // Timeline data
 const timelineData = [
@@ -101,6 +104,7 @@ const HolographicSection = ({ children, className = "" }: { children: React.Reac
         start: "top 80%",
         end: "bottom 20%",
         toggleActions: "play none none reverse",
+        markers: false, // Disable debug markers in production
       },
     });
   });
@@ -208,6 +212,59 @@ function App() {
         scrub: 1,
       },
     });
+
+    // Staggered animations for skills and projects
+    gsap.from(".skill-card", {
+      opacity: 0,
+      y: 50,
+      duration: 1,
+      ease: "power3.out",
+      stagger: 0.2,
+      scrollTrigger: {
+        trigger: ".skill-card",
+        start: "top 80%",
+        toggleActions: "play none none reverse",
+      },
+    });
+
+    gsap.from(".project-card", {
+      opacity: 0,
+      y: 50,
+      duration: 1,
+      ease: "power3.out",
+      stagger: 0.2,
+      scrollTrigger: {
+        trigger: ".project-card",
+        start: "top 80%",
+        toggleActions: "play none none reverse",
+      },
+    });
+
+    // Glitch effect for the hero text
+    gsap.to(".glitch-text", {
+      opacity: 1,
+      duration: 1,
+      ease: "power3.out",
+      scrollTrigger: {
+        trigger: ".glitch-text",
+        start: "top 80%",
+        toggleActions: "play none none reverse",
+      },
+    });
+
+    // Additional animations for icons
+    gsap.from(".icon", {
+      opacity: 0,
+      y: 20,
+      duration: 1,
+      ease: "power3.out",
+      stagger: 0.1,
+      scrollTrigger: {
+        trigger: ".icon",
+        start: "top 80%",
+        toggleActions: "play none none reverse",
+      },
+    });
   }, { scope: container });
 
   return (
@@ -234,11 +291,13 @@ function App() {
         <div className="text-center hero-content">
           <div className="mb-12 inline-block relative">
             <div className="relative w-48 h-48 mx-auto rounded-full overflow-hidden">
-              <img
-                src="/pfp.jpeg"
-                alt="Siddharth Sahu"
-                className="w-full h-full rounded-full border-4 border-black/80 backdrop-blur-xl"
-              />
+              <Suspense fallback={<div className="w-48 h-48 bg-gray-800 rounded-full" />}>
+                <LazyImage
+                  src="/pfp.jpeg"
+                  alt="Siddharth Sahu"
+                  className="w-full h-full rounded-full border-4 border-black/80 backdrop-blur-xl"
+                />
+              </Suspense>
               <div className="holographic-bg absolute inset-0 rounded-full bg-conic-gradient from-white via-gray-500 to-gray-900 opacity-20" />
             </div>
           </div>
@@ -253,7 +312,7 @@ function App() {
 
           <div className="flex justify-center gap-6 mb-8">
             {[Github, Mail, Linkedin, Code2].map((Icon, i) => (
-              <div key={i} className="p-4 bg-gray-800/50 rounded-xl border border-gray-700 backdrop-blur-lg hover:border-white/50 transition-colors">
+              <div key={i} className="p-4 bg-gray-800/50 rounded-xl border border-gray-700 backdrop-blur-lg hover:border-white/50 transition-colors icon">
                 <Icon className="text-gray-300 h-8 w-8" />
               </div>
             ))}
@@ -309,7 +368,7 @@ function App() {
 
         <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {skillsData.map((skill, i) => (
-            <GlowingCard key={i}>
+            <GlowingCard key={i} className="skill-card">
               <div className="flex items-center gap-4 mb-6">
                 <div className="p-3 bg-gradient-to-br from-white/20 to-gray-500/20 rounded-lg">
                   <Code className="text-white" size={24} />
@@ -341,7 +400,7 @@ function App() {
 
         <div className="grid grid-cols-1 gap-8 max-w-6xl mx-auto">
           {projectsData.map((project, i) => (
-            <GlowingCard key={i}>
+            <GlowingCard key={i} className="project-card">
               <div className="flex items-center gap-4 mb-6">
                 {project.icon}
                 <h3 className="text-2xl font-bold text-white">{project.title}</h3>
@@ -367,7 +426,7 @@ function App() {
         <div className="container mx-auto px-4 text-center">
           <div className="flex justify-center gap-6 mb-8">
             {[Github, Mail, Linkedin].map((Icon, i) => (
-              <div key={i} className="text-gray-400 hover:text-white transition-colors">
+              <div key={i} className="text-gray-400 hover:text-white transition-colors icon">
                 <Icon size={24} />
               </div>
             ))}
