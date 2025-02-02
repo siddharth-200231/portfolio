@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -25,14 +25,14 @@ const timelineData = [
     title: "Bachelor of Technology – Computer Science and Engineering",
     subtitle: "Siksha ’O’ Anusandhan University (ITER)",
     description: "CGPA: 8.18 | Bhubaneswar, Odisha",
-    icon: <GraduationCap className="text-blue-400" size={24} />,
+    icon: <GraduationCap className="text-teal-500" size={24} />,
   },
   {
     date: "Nov 2024 - Jan 2025",
     title: "Full Stack Developer",
     subtitle: "Block Stars Pvt Ltd",
     description: "Remote | Designed and implemented reusable UI components and responsive web pages.",
-    icon: <Briefcase className="text-purple-400" size={24} />,
+    icon: <Briefcase className="text-purple-500" size={24} />,
   },
 ];
 
@@ -70,19 +70,19 @@ const projectsData = [
     title: "GoCabs",
     description: "Real-time cab booking platform with live tracking",
     technologies: ["React", "Node.js", "WebSockets"],
-    icon: <Car className="text-purple-400" size={32} />,
+    icon: <Car className="text-purple-500" size={32} />,
   },
   {
     title: "Health AI",
     description: "Machine learning model for disease prediction",
     technologies: ["Python", "TensorFlow", "Pandas"],
-    icon: <Heart className="text-blue-400" size={32} />,
+    icon: <Heart className="text-teal-500" size={32} />,
   },
   {
     title: "E-Commerce Platform",
     description: "Full-stack e-commerce solution with payment integration",
     technologies: ["Next.js", "Stripe", "MongoDB"],
-    icon: <Code2 className="text-pink-400" size={32} />,
+    icon: <Code2 className="text-pink-500" size={32} />,
   },
 ];
 
@@ -94,10 +94,12 @@ const HolographicSection = ({ children, className = "" }: { children: React.Reac
     gsap.from(sectionRef.current, {
       opacity: 0,
       y: 100,
-      duration: 1,
+      duration: 1.5,
+      ease: "power3.out",
       scrollTrigger: {
         trigger: sectionRef.current,
         start: "top 80%",
+        end: "bottom 20%",
         toggleActions: "play none none reverse",
       },
     });
@@ -122,19 +124,31 @@ const GlowingCard = ({ children }: { children: React.ReactNode }) => {
     gsap.from(cardRef.current, {
       opacity: 0,
       y: 50,
-      duration: 0.8,
+      duration: 1,
+      ease: "elastic.out(1, 0.75)",
       scrollTrigger: {
         trigger: cardRef.current,
         start: "top 80%",
         toggleActions: "play none none reverse",
       },
     });
+
+    // Hover effect
+    gsap.to(cardRef.current, {
+      scale: 1.05,
+      duration: 0.3,
+      ease: "power2.out",
+      paused: true,
+    });
+
+    cardRef.current?.addEventListener("mouseenter", () => gsap.to(cardRef.current, { scale: 1.05, duration: 0.3 }));
+    cardRef.current?.addEventListener("mouseleave", () => gsap.to(cardRef.current, { scale: 1, duration: 0.3 }));
   });
 
   return (
     <div
       ref={cardRef}
-      className="glowing-card group relative bg-gray-900/80 backdrop-blur-2xl rounded-3xl border border-gray-800 p-8 shadow-2xl transition-transform duration-300"
+      className="glowing-card group relative bg-gray-900/80 backdrop-blur-2xl rounded-3xl border border-gray-800 p-8 shadow-2xl transition-transform duration-300 hover:border-teal-500/50"
     >
       {children}
     </div>
@@ -166,21 +180,29 @@ function App() {
       },
     });
 
-    // Holographic background rotation
+    // Holographic background rotation and color shift
     gsap.to(".holographic-bg", {
       rotation: 360,
       repeat: -1,
       duration: 20,
       ease: "none",
     });
+
+    gsap.to(".holographic-bg", {
+      background: "conic-gradient(from 90deg, #0ea5e9, #14b8a6, #a855f7, #0ea5e9)",
+      duration: 10,
+      repeat: -1,
+      yoyo: true,
+      ease: "sine.inOut",
+    });
   }, { scope: container });
 
   return (
-    <div ref={container} className="min-h-screen bg-gradient-to-b from-[#0c0a1d] to-[#2a1e5c]">
+    <div ref={container} className="min-h-screen bg-gradient-to-b from-[#0c0a1d] to-[#1e1b3a]">
       {/* Progress bar */}
       <div
         ref={progressBarRef}
-        className="fixed top-0 left-0 h-1 bg-gradient-to-r from-blue-400 to-purple-500 origin-left z-50"
+        className="fixed top-0 left-0 h-1 bg-gradient-to-r from-teal-500 to-purple-500 origin-left z-50"
         style={{ transform: "scaleX(0)" }}
       />
 
@@ -204,7 +226,7 @@ function App() {
                 alt="Siddharth Sahu"
                 className="w-full h-full rounded-full border-4 border-gray-900/80 backdrop-blur-xl"
               />
-              <div className="holographic-bg absolute inset-0 rounded-full bg-conic-gradient from-blue-400 via-purple-500 to-pink-400 opacity-20" />
+              <div className="holographic-bg absolute inset-0 rounded-full bg-conic-gradient from-teal-500 via-purple-500 to-pink-500 opacity-20" />
             </div>
           </div>
 
@@ -218,7 +240,7 @@ function App() {
 
           <div className="flex justify-center gap-6 mb-8">
             {[Github, Mail, Linkedin, Code2].map((Icon, i) => (
-              <div key={i} className="p-4 bg-gray-800/50 rounded-xl border border-gray-700 backdrop-blur-lg">
+              <div key={i} className="p-4 bg-gray-800/50 rounded-xl border border-gray-700 backdrop-blur-lg hover:border-teal-500/50 transition-colors">
                 <Icon className="text-gray-300 h-8 w-8" />
               </div>
             ))}
@@ -228,10 +250,10 @@ function App() {
           <div className="mx-auto">
             <a
               href="/siddcv.pdf"
-              className="px-8 py-4 bg-gradient-to-r from-blue-400/20 to-purple-400/20 rounded-xl backdrop-blur-lg flex items-center gap-2"
+              className="px-8 py-4 bg-gradient-to-r from-teal-500/20 to-purple-500/20 rounded-xl backdrop-blur-lg flex items-center gap-2 hover:bg-gradient-to-r hover:from-teal-500/30 hover:to-purple-500/30 transition-colors"
             >
-              <Download className="text-blue-400" />
-              <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent font-semibold">
+              <Download className="text-teal-500" />
+              <span className="bg-gradient-to-r from-teal-500 to-purple-500 bg-clip-text text-transparent font-semibold">
                 Download CV
               </span>
             </a>
@@ -242,11 +264,11 @@ function App() {
       {/* Timeline Section */}
       <HolographicSection>
         <div className="relative max-w-6xl mx-auto">
-          <div className="absolute left-1/2 w-1 h-full bg-gradient-to-b from-blue-400/20 to-purple-400/20" />
+          <div className="absolute left-1/2 w-1 h-full bg-gradient-to-b from-teal-500/20 to-purple-500/20" />
           {timelineData.map((item, i) => (
             <div key={i} className="relative mb-16 w-full">
               <div className={`flex ${i % 2 === 0 ? "flex-row" : "flex-row-reverse"} items-center`}>
-                <div className="w-6 h-6 bg-blue-400 rounded-full z-10" />
+                <div className="w-6 h-6 bg-teal-500 rounded-full z-10" />
                 <div className="flex-1 p-8">
                   <GlowingCard>
                     <div className="flex items-center gap-4 mb-4">
@@ -267,7 +289,7 @@ function App() {
       {/* Skills Section */}
       <HolographicSection>
         <h2 className="text-4xl font-bold text-center mb-16">
-          <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-teal-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
             Technical Expertise
           </span>
         </h2>
@@ -276,8 +298,8 @@ function App() {
           {skillsData.map((skill, i) => (
             <GlowingCard key={i}>
               <div className="flex items-center gap-4 mb-6">
-                <div className="p-3 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-lg">
-                  <Code className="text-blue-400" size={24} />
+                <div className="p-3 bg-gradient-to-br from-teal-500/20 to-purple-500/20 rounded-lg">
+                  <Code className="text-teal-500" size={24} />
                 </div>
                 <h3 className="text-2xl font-bold text-gray-100">{skill.title}</h3>
               </div>
@@ -285,7 +307,7 @@ function App() {
                 {skill.skills.map((item, j) => (
                   <span
                     key={j}
-                    className="px-3 py-1.5 bg-gray-800/50 rounded-full text-sm text-blue-300 backdrop-blur-sm"
+                    className="px-3 py-1.5 bg-gray-800/50 rounded-full text-sm text-teal-300 backdrop-blur-sm"
                   >
                     {item}
                   </span>
@@ -299,7 +321,7 @@ function App() {
       {/* Projects Section */}
       <HolographicSection className="bg-gradient-to-br from-gray-900/50 to-purple-900/20">
         <h2 className="text-4xl font-bold text-center mb-16">
-          <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-purple-500 to-teal-500 bg-clip-text text-transparent">
             Featured Projects
           </span>
         </h2>
@@ -316,7 +338,7 @@ function App() {
                 {project.technologies.map((tech, j) => (
                   <span
                     key={j}
-                    className="px-3 py-1 bg-purple-400/10 text-purple-300 rounded-full text-sm"
+                    className="px-3 py-1 bg-purple-500/10 text-purple-300 rounded-full text-sm"
                   >
                     {tech}
                   </span>
@@ -332,14 +354,14 @@ function App() {
         <div className="container mx-auto px-4 text-center">
           <div className="flex justify-center gap-6 mb-8">
             {[Github, Mail, Linkedin].map((Icon, i) => (
-              <div key={i} className="text-gray-400 hover:text-blue-400 transition-colors">
+              <div key={i} className="text-gray-400 hover:text-teal-500 transition-colors">
                 <Icon size={24} />
               </div>
             ))}
           </div>
           <p className="text-gray-600">
             © {new Date().getFullYear()} Siddharth Sahu. Built with{" "}
-            <span className="text-blue-400">innovation</span>
+            <span className="text-teal-500">innovation</span>
           </p>
         </div>
       </footer>
