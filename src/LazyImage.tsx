@@ -3,7 +3,7 @@ import React from "react";
 const LazyImage = ({
   src = "/pfp.jpeg",
   alt = "Image",
-  className = "",
+  className = " object-cover w-full h-full",
   ...props
 }) => {
   return (

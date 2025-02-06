@@ -3,17 +3,83 @@
 @tailwind utilities;
 
 @layer base {
-  html {
-    scroll-behavior: smooth;
+  :root {
+    --color-primary: 168 85 247;
+    --color-secondary: 59 130 246;
+    --color-background: 0 0 0;
+    --color-text: 255 255 255;
   }
-  
+
   body {
-    @apply text-gray-800 antialiased;
+    @apply bg-black text-white antialiased;
   }
 }
 
 @layer components {
+  .glowing-card {
+    @apply relative bg-gray-900/50 backdrop-blur-xl 
+           border border-gray-800/50 rounded-2xl
+           transition-all duration-300 ease-out
+           hover:border-purple-500/30 
+           hover:shadow-lg hover:shadow-purple-500/10
+           hover:-translate-y-1;
+  }
+
+  .tech-pill {
+    @apply px-3 py-1 bg-purple-500/10 
+           rounded-full text-sm text-gray-300
+           transition-all duration-300 ease-out
+           hover:bg-purple-500/20 
+           hover:-translate-y-1
+           hover:shadow-sm hover:shadow-purple-500/20;
+  }
+
+  .gradient-text {
+    @apply bg-clip-text text-transparent 
+           bg-gradient-to-r from-white via-purple-500 to-blue-500;
+  }
+}
+
+@layer utilities {
   .container {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .section-padding {
+    @apply py-12 md:py-24;
+  }
+
+  .grid-layout {
+    @apply grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8;
+  }
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-gradient {
+  animation: gradient-shift 15s ease infinite;
+  background-size: 400% 400%;
+}
+
+.bg-grid {
+  background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* Responsive Typography */
+@screen sm {
+  html {
+    font-size: 14px;
+  }
+}
+
+@screen md {
+  html {
+    font-size: 16px;
   }
 }

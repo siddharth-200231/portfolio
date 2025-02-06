@@ -213,129 +213,89 @@ const AnimatedText = ({ children, className }) => {
   );
 };
 
-// Enhanced Hero Section
+// Enhanced Hero Section with Responsive Design
 const EnhancedHero = () => {
-  const imageContainerRef = useRef<HTMLDivElement>(null);
-  const socialIconsRef = useRef<HTMLDivElement[]>([]);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-
-  useGSAP(() => {
-    // Profile image floating animation
-    gsap.to(imageContainerRef.current, {
-      y: 20,
-      duration: 3,
-      repeat: -1,
-      yoyo: true,
-      ease: "power1.inOut",
-    });
-
-    // Social icons animation
-    gsap.from(socialIconsRef.current, {
-      stagger: 0.1,
-      scale: 0,
-      duration: 0.8,
-      ease: "back.out(1.7)",
-      scrollTrigger: {
-        trigger: ".social-icons-container",
-        start: "top 80%",
-      },
-    });
-
-    // Title animation
-    gsap.from(titleRef.current, {
-      opacity: 0,
-      y: 40,
-      duration: 1,
-      ease: "power3.out",
-      scrollTrigger: {
-        trigger: titleRef.current,
-        start: "top 80%",
-      },
-    });
-
-    // Text flicker animation
-    gsap.to(titleRef.current, {
-      opacity: 0.8,
-      duration: 0.1,
-      repeat: 3,
-      yoyo: true,
-      ease: "power1.inOut",
-      delay: 1,
-    });
-  });
-
-  const contactInfo = [
-    { label: "Email", value: "siddharth@example.com", icon: <Mail /> },
-    { label: "Location", value: "Bhubaneswar, India", icon: <MapPin /> },
-  ];
-
   return (
-    <HolographicSection className="h-fit flex items-center">
-      <div className="text-center hero-content">
-        <div className="mb-12 inline-block relative" ref={imageContainerRef}>
-          <div className="relative w-48 h-48 mx-auto rounded-full overflow-hidden">
-            <Suspense
-              fallback={<div className="w-48 h-48 bg-gray-800 rounded-full" />}
-            >
-              <LazyImage
-                src="/pfp.jpeg"
-                alt="Siddharth Sahu"
-                className="w-full h-full rounded-full border-4 border-black/80 backdrop-blur-xl"
-              />
-            </Suspense>
-            <div className="holographic-bg absolute inset-0 rounded-full bg-conic-gradient from-white via-gray-500 to-gray-900 opacity-20" />
-          </div>
-        </div>
+    <section className="h-fit relative overflow-hidden bg-gradient-to-br from-black via-gray-900 to-black">
+      {/* Animated Background */}
+      <div className="absolute inset-0 bg-grid opacity-20">
+        <div className="absolute inset-0 bg-gradient-radial from-purple-500/20 via-transparent to-transparent animate-pulse" />
+      </div>
 
-        <h1
-          ref={titleRef}
-          className="text-6xl md:text-7xl font-extrabold mb-6 glitch-text text-white"
-        >
-          Siddharth Sahu
-        </h1>
-
-        <p className="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
-          Full Stack Architect crafting immersive digital experiences through
-          innovative code and modern design.
-        </p>
-
-        <div className="flex justify-center gap-6 mb-8 social-icons-container">
-          {[Github, Mail, Linkedin, Code2].map((Icon, i) => (
-            <div
-              key={i}
-              ref={(el) => (socialIconsRef.current[i] = el!)}
-              className="p-4 bg-gray-800/50 rounded-xl border border-gray-700 backdrop-blur-lg hover:border-white/50 transition-colors icon"
-            >
-              <Icon className="text-gray-300 h-8 w-8" />
-            </div>
-          ))}
-        </div>
-
-        <div className="mx-auto">
-          <a
-            href="/siddcv.pdf"
-            className="px-8 py-4 bg-gradient-to-r from-white/20 to-gray-500/20 rounded-xl backdrop-blur-lg flex items-center gap-2 hover:bg-gradient-to-r hover:from-white/30 hover:to-gray-500/30 transition-colors"
-          >
-            <Download className="text-white" />
-            <span className="bg-gradient-to-r from-white to-gray-500 bg-clip-text text-transparent font-semibold">
-              Download CV
-            </span>
-          </a>
-        </div>
-
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
-          {contactInfo.map((info, i) => (
-            <div key={i} className="flex items-center gap-3 text-gray-400">
-              <div className="p-2 bg-gray-800/50 rounded-lg">{info.icon}</div>
-              <div>
-                <p className="text-sm text-gray-500">{info.label}</p>
-                <p className="text-white">{info.value}</p>
+      <div className="container mx-auto px-4 py-12 md:py-20 lg:py-24">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+          {/* Left Content */}
+          <div className="space-y-6 md:space-y-8 text-center lg:text-left">
+            <div className="space-y-4">
+              <h2 className="text-gray-400 text-lg md:text-xl font-medium">Hello, I'm</h2>
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-purple-500 to-blue-500">
+                Siddharth Sahu
+              </h1>
+              <div className="flex items-center gap-3 justify-center lg:justify-start">
+                <div className="h-1 w-12 bg-purple-500" />
+                <p className="text-lg md:text-xl text-gray-400">Full Stack Developer</p>
               </div>
             </div>
-          ))}
+
+            <p className="text-gray-400 text-base md:text-lg max-w-xl mx-auto lg:mx-0 leading-relaxed">
+              Crafting digital experiences through clean code and modern design.
+              Specialized in building scalable web applications with cutting-edge technologies.
+            </p>
+
+            <div className="flex gap-4 flex-col sm:flex-row justify-center lg:justify-start">
+              <button className="px-6 md:px-8 py-3 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full text-white font-medium hover:shadow-lg hover:shadow-purple-500/25 transition-all duration-300">
+                Get in Touch
+              </button>
+              <button className="px-6 md:px-8 py-3 border border-gray-700 rounded-full text-white font-medium hover:border-purple-500 transition-all duration-300">
+                View Projects
+              </button>
+            </div>
+
+            <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
+              {["React", "TypeScript", "Node.js", "AWS"].map((tech, i) => (
+                <div key={i} className="tech-pill whitespace-nowrap">
+                  {tech}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Right Content */}
+          <div className="relative mt-12 lg:mt-0">
+            <div className="relative z-10 max-w-[300px] md:max-w-[400px] mx-auto">
+              <div className="relative perspective-card group">
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-blue-500/20 rounded-3xl transform -skew-x-12 group-hover:skew-x-0 transition-transform duration-300" />
+                <div className="relative bg-gray-900/80 backdrop-blur-xl p-4 md:p-8 rounded-3xl border border-gray-800 group-hover:border-purple-500/50 transition-all duration-300">
+                  <img 
+                    src="/pfp.jpeg" 
+                    alt="Siddharth Sahu"
+                    className="w-full aspect-[4/5] object-cover rounded-2xl"
+                  />
+                  
+                  <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 flex gap-3 md:gap-4">
+                    {[Github, Linkedin, Mail].map((Icon, i) => (
+                      <a
+                        key={i}
+                        className="p-2 md:p-3 bg-gray-800/90 rounded-full backdrop-blur-xl hover:bg-purple-500/20 transition-colors duration-300"
+                        href="#"
+                      >
+                        <Icon className="w-5 h-5 md:w-6 md:h-6 text-white" />
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Floating Elements */}
+            <div className="absolute inset-0 pointer-events-none hidden md:block">
+              <div className="floating-element absolute top-20 left-0 w-16 md:w-20 h-16 md:h-20 bg-purple-500/10 rounded-full blur-xl" />
+              <div className="floating-element absolute bottom-20 right-0 w-24 md:w-32 h-24 md:h-32 bg-blue-500/10 rounded-full blur-xl" />
+            </div>
+          </div>
         </div>
       </div>
-    </HolographicSection>
+    </section>
   );
 };
 
@@ -492,36 +452,72 @@ function App() {
       </HolographicSection>
 
       {/* Projects Section */}
-      <HolographicSection className="py-12">
-        <AnimatedText className="text-3xl font-bold text-center mb-12">
-          Featured Projects
-        </AnimatedText>
-        <div className="grid grid-cols-1 gap-6 max-w-6xl mx-auto">
-          {projectsData.map((project, i) => (
-            <GlowingCard key={i}>
-              <div className="p-6">
-                <div className="flex items-center gap-4 mb-6">
-                  {project.icon}
-                  <h3 className="text-2xl font-bold text-white">
-                    {project.title}
-                  </h3>
-                </div>
-                <p className="text-gray-400 mb-6">{project.description}</p>
-                <div className="flex flex-wrap gap-2">
-                  {project.technologies.map((tech, j) => (
-                    <span
-                      key={j}
-                      className="px-3 py-1.5 bg-gray-800/50 rounded-full text-sm text-white backdrop-blur-sm hover:bg-gradient-to-r from-white/10 to-gray-500/10 transition-colors"
-                    >
-                      {tech}
-                    </span>
-                  ))}
+      <section className="min-h-screen relative overflow-hidden bg-gradient-to-br from-black via-gray-900 to-black py-20">
+        {/* Animated Background */}
+        <div className="absolute inset-0 bg-grid opacity-20">
+          <div className="absolute inset-0 bg-gradient-radial from-purple-500/20 via-transparent to-transparent animate-pulse" />
+        </div>
+
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            {/* Left Content */}
+            <div className="space-y-8">
+              <div className="space-y-4">
+                <h2 className="text-gray-400 text-xl font-medium">What I've Built</h2>
+                <h1 className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-purple-500 to-blue-500">
+                  Featured Projects
+                </h1>
+                <div className="flex items-center gap-3">
+                  <div className="h-1 w-12 bg-purple-500" />
+                  <p className="text-xl text-gray-400">Recent Work</p>
                 </div>
               </div>
-            </GlowingCard>
-          ))}
+
+              <p className="text-gray-400 text-lg max-w-xl leading-relaxed">
+                Explore my latest projects showcasing expertise in full-stack development, 
+                machine learning, and modern web technologies.
+              </p>
+            </div>
+
+            {/* Right Content - Projects Grid */}
+            <div className="relative">
+              <div className="grid gap-6">
+                {projectsData.map((project, i) => (
+                  <GlowingCard key={i} className="transform hover:scale-105 transition-all duration-300">
+                    <div className="p-6">
+                      <div className="flex items-center gap-4 mb-6">
+                        <div className="p-3 bg-gradient-to-br from-purple-500/20 to-blue-500/20 rounded-xl">
+                          {project.icon}
+                        </div>
+                        <h3 className="text-2xl font-bold gradient-text">
+                          {project.title}
+                        </h3>
+                      </div>
+                      <p className="text-gray-400 mb-6">{project.description}</p>
+                      <div className="flex flex-wrap gap-2">
+                        {project.technologies.map((tech, j) => (
+                          <span
+                            key={j}
+                            className="tech-pill"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </GlowingCard>
+                ))}
+              </div>
+
+              {/* Floating Elements */}
+              <div className="absolute inset-0 pointer-events-none">
+                <div className="floating-element absolute top-20 left-0 w-20 h-20 bg-purple-500/10 rounded-full blur-xl" />
+                <div className="floating-element absolute bottom-20 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-xl" />
+              </div>
+            </div>
+          </div>
         </div>
-      </HolographicSection>
+      </section>
 
       {/* Contact Section */}
       <HolographicSection className="py-12">
