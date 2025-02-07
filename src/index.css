@@ -111,3 +111,11 @@
   50% { background-position: 100% center; }
   100% { background-position: 0% center; }
 }
+.shadow-glow {
+  box-shadow: 0 0 15px rgba(139,92,246,0.5);
+}
+
+.tech-pill {
+  @apply px-4 py-2 rounded-full;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}

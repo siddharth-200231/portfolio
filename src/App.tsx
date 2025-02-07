@@ -2,6 +2,7 @@ import React, { useRef, lazy, Suspense } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import {
   Github,
   Mail,
@@ -17,7 +18,7 @@ import {
 } from "lucide-react";
 import Scene3D from "./Scene3D";
 // Register GSAP plugins
-gsap.registerPlugin(ScrollTrigger, useGSAP);
+gsap.registerPlugin(ScrollTrigger, ScrollToPlugin, useGSAP);
 
 // Lazy load heavy components
 const LazyImage = lazy(() => import("./LazyImage"));
@@ -217,57 +218,54 @@ const AnimatedText = ({ children, className }) => {
 const EnhancedHero = () => {
   return (
     <section className="min-h-[100dvh] relative overflow-hidden bg-gradient-to-br from-black via-gray-900 to-black">
-      {/* 3D Scene Background */}
       <Scene3D />
 
-      {/* Existing Background */}
       <div className="absolute inset-0 bg-grid opacity-20 animate-fade-in">
         <div className="absolute inset-0 bg-gradient-radial from-purple-500/20 via-transparent to-transparent animate-pulse-slow" />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
       </div>
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24 min-h-[100dvh] flex items-center">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 xl:gap-16 items-center w-full">
-          {/* Enhanced Left Content */}
-          <div className="space-y-8 md:space-y-10 max-w-2xl mx-auto lg:mx-0 w-full">
-            <div className="space-y-4 sm:space-y-6">
-              <h2 className="text-gray-400 text-lg sm:text-xl lg:text-2xl font-medium tracking-wide animate-fade-in">
+      <div className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 md:py-16 min-h-[100dvh] flex items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 w-full">
+          {/* Left Content - Mobile First */}
+          <div className="space-y-6 sm:space-y-8 text-center lg:text-left order-2 lg:order-1 relative z-20">
+            <div className="space-y-4 backdrop-blur-sm bg-black/30 p-6 rounded-xl border border-white/10">
+              <h2 className="text-gray-200 text-base sm:text-lg md:text-xl font-medium tracking-wide drop-shadow-lg">
                 Hello, I'm
               </h2>
-              <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold 
-                         bg-clip-text text-transparent bg-gradient-to-r 
-                         from-white via-purple-500 to-blue-500
-                         animate-gradient will-change-transform">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl xl:text-7xl font-bold 
+                             bg-clip-text text-transparent bg-gradient-to-r 
+                             from-white via-purple-500 to-blue-500
+                             drop-shadow-[0_0_25px_rgba(139,92,246,0.5)]">
                 Siddharth Sahu
               </h1>
               <div className="flex items-center gap-3 justify-center lg:justify-start">
-                <div className="h-1 w-12 bg-purple-500 animate-width" />
-                <p className="text-lg sm:text-xl lg:text-2xl text-gray-400">
+                <div className="h-1 w-12 bg-purple-500 shadow-glow" />
+                <p className="text-lg sm:text-xl md:text-2xl text-white font-semibold drop-shadow-lg">
                   Full Stack Developer
                 </p>
               </div>
             </div>
 
-            <p className="text-gray-400 text-base sm:text-lg lg:text-xl 
-                       leading-relaxed sm:leading-relaxed max-w-xl 
-                       mx-auto lg:mx-0 animate-fade-in opacity-90">
+            <p className="text-white text-sm sm:text-base md:text-lg 
+                          max-w-xl mx-auto lg:mx-0 leading-relaxed
+                          drop-shadow-lg bg-black/30 p-4 rounded-lg">
               Crafting digital experiences through clean code and modern design.
               Specialized in building scalable web applications with cutting-edge technologies.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <button className="group px-8 py-3 bg-gradient-to-r from-purple-600 to-blue-600 
-                             rounded-full text-white font-medium relative overflow-hidden
-                             transform hover:scale-105 transition-all duration-300 
-                             hover:shadow-lg hover:shadow-purple-500/25">
-                <span className="relative z-10">Get in Touch</span>
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 
-                            opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start 
+                            drop-shadow-lg">
+              <button className="px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 
+                                rounded-full text-white font-medium text-sm sm:text-base
+                                shadow-lg shadow-purple-500/25 hover:shadow-purple-500/50
+                                transition-all duration-300">
+                Get in Touch
               </button>
-              <button className="px-8 py-3 border border-gray-700 rounded-full 
-                             text-white font-medium hover:border-purple-500 
-                             transform hover:scale-105 transition-all duration-300
-                             hover:bg-purple-500/10">
+              <button className="px-6 py-3 border border-white/20 rounded-full 
+                                text-white font-medium text-sm sm:text-base
+                                backdrop-blur-sm bg-white/10 hover:bg-white/20
+                                transition-all duration-300">
                 View Projects
               </button>
             </div>
@@ -275,44 +273,35 @@ const EnhancedHero = () => {
             <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
               {["React", "TypeScript", "Node.js", "AWS"].map((tech, i) => (
                 <div key={i} 
-                     className="tech-pill transform hover:scale-110 transition-all duration-300
-                               animate-fade-in"
-                     style={{ animationDelay: `${i * 100}ms` }}>
+                     className="tech-pill text-sm sm:text-base
+                                bg-white/10 backdrop-blur-sm text-white
+                                border border-white/20 shadow-lg">
                   {tech}
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Enhanced Right Content */}
-          <div className="relative mt-12 lg:mt-0">
-            <div className="relative z-10 max-w-[300px] sm:max-w-[350px] lg:max-w-[400px] 
-                        mx-auto transform hover:scale-105 transition-all duration-500">
+          {/* Right Content - Profile Image */}
+          <div className="relative mt-4 lg:mt-0 order-1 lg:order-2">
+            <div className="relative z-10 max-w-[200px] sm:max-w-[250px] md:max-w-[300px] mx-auto">
               <div className="relative perspective-card group">
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 
-                            to-blue-500/20 rounded-3xl transform -skew-x-12 
-                            group-hover:skew-x-0 transition-transform duration-500" />
-                <div className="relative bg-gray-900/80 backdrop-blur-xl p-6 sm:p-8 
-                            rounded-3xl border border-gray-800 
-                            group-hover:border-purple-500/50 transition-all duration-500">
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-blue-500/20 rounded-3xl transform -skew-x-12 group-hover:skew-x-0 transition-transform duration-300" />
+                <div className="relative bg-gray-900/80 backdrop-blur-xl p-4 sm:p-6 rounded-3xl border border-gray-800">
                   <img 
                     src="/pfp.jpeg" 
                     alt="Siddharth Sahu"
                     className="w-full aspect-[4/5] object-cover rounded-2xl"
-                    loading="eager"
                   />
                 </div>
               </div>
             </div>
 
-            {/* Enhanced Floating Elements */}
+            {/* Floating Elements - Adjusted for Mobile */}
             <div className="absolute inset-0 pointer-events-none">
-              <div className="floating-element absolute top-20 left-0 
-                          w-20 h-20 bg-purple-500/10 rounded-full blur-xl" />
-              <div className="floating-element absolute bottom-20 right-0 
-                          w-32 h-32 bg-blue-500/10 rounded-full blur-xl" />
-              <div className="floating-element absolute top-40 right-20 
-                          w-16 h-16 bg-cyan-500/10 rounded-full blur-xl" />
+              <div className="floating-element absolute top-10 left-0 w-16 sm:w-20 h-16 sm:h-20 bg-purple-500/10 rounded-full blur-xl" />
+              <div className="floating-element absolute bottom-10 right-0 w-24 sm:w-32 h-24 sm:h-32 bg-blue-500/10 rounded-full blur-xl" />
+              <div className="floating-element absolute top-20 right-10 w-12 sm:w-16 h-12 sm:h-16 bg-cyan-500/10 rounded-full blur-xl" />
             </div>
           </div>
         </div>
@@ -393,11 +382,14 @@ function App() {
 
   useGSAP(
     () => {
-      // Smooth scroll setup
-      gsap.to(container.current, {
-        scrollTo: { y: 0, autoKill: false },
+      // Fix ScrollTo configuration
+      gsap.to(window, {
+        scrollTo: {
+          y: 0,
+          autoKill: false
+        },
         duration: 1.5,
-        ease: "power3.inOut",
+        ease: "power3.inOut"
       });
 
       // Holographic background rotation and color shift

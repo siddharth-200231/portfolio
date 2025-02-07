@@ -1,140 +1,86 @@
-import { useRef, useMemo } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import { useRef, useMemo, useState } from 'react';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { 
   Float, 
   PerspectiveCamera,
-  Instance,
-  Instances,
-  Trail,
-  Text3D
+  Points,
+  PointMaterial 
 } from '@react-three/drei';
 import * as THREE from 'three';
-import { Preload } from '@react-three/drei';
-// Custom shader for glow effect
-const glowShader = {
-  uniforms: {
-    color: { value: new THREE.Color('#8b5cf6') },
-    glowColor: { value: new THREE.Color('#4c1d95') },
-    time: { value: 0 }
-  },
-  vertexShader: `
-    varying vec2 vUv;
-    void main() {
-      vUv = uv;
-      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-    }
-  `,
-  fragmentShader: `
-    uniform vec3 color;
-    uniform vec3 glowColor;
-    uniform float time;
-    varying vec2 vUv;
-    void main() {
-      float strength = distance(vUv, vec2(0.5));
-      vec3 glow = mix(color, glowColor, strength);
-      gl_FragColor = vec4(glow, 1.0 - strength);
-    }
-  `
-};
 
-function ParticleGalaxy() {
-  const count = 1000;
-  const ref = useRef();
+function GalaxyField() {
+  const points = useRef();
+  const { mouse, viewport } = useThree();
+  const count = window.innerWidth < 768 ? 2000 : 4000;
+  
   const positions = useMemo(() => {
     const pos = new Float32Array(count * 3);
+    const radius = 5;
+    
     for (let i = 0; i < count; i++) {
       const angle = (i / count) * Math.PI * 2;
-      const radius = Math.random() * 5 + 2;
-      pos[i * 3] = Math.cos(angle) * radius;
-      pos[i * 3 + 1] = (Math.random() - 0.5) * 2;
-      pos[i * 3 + 2] = Math.sin(angle) * radius;
+      const spiralRadius = (Math.random() + 0.5) * radius;
+      const heightVar = Math.cos(angle * 3) * (Math.random() - 0.5) * 2;
+      
+      pos[i * 3] = Math.cos(angle) * spiralRadius;
+      pos[i * 3 + 1] = heightVar;
+      pos[i * 3 + 2] = Math.sin(angle) * spiralRadius;
     }
     return pos;
-  }, []);
+  }, [count]);
 
   useFrame((state) => {
-    if (ref.current) {
-      ref.current.rotation.y = state.clock.getElapsedTime() * 0.05;
+    if (points.current) {
+      points.current.rotation.y = state.clock.getElapsedTime() * 0.05;
+      points.current.rotation.z = Math.sin(state.clock.getElapsedTime() * 0.5) * 0.1;
+      
+      // Mouse interaction
+      const x = (mouse.x * viewport.width) / 2;
+      const y = (mouse.y * viewport.height) / 2;
+      points.current.position.x += (x - points.current.position.x) * 0.05;
+      points.current.position.y += (y - points.current.position.y) * 0.05;
     }
   });
 
   return (
-    <points ref={ref}>
-      <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          count={count}
-          array={positions}
-          itemSize={3}
+    <Float speed={1.5} rotationIntensity={0.5} floatIntensity={0.5}>
+      <Points ref={points} positions={positions} stride={3}>
+        <PointMaterial
+          transparent
+          color="#8b5cf6"
+          size={0.025}
+          sizeAttenuation={true}
+          depthWrite={false}
+          blending={THREE.AdditiveBlending}
         />
-      </bufferGeometry>
-      <pointsMaterial
-        size={0.03}
-        color="#8b5cf6"
-        transparent
-        opacity={0.8}
-        blending={THREE.AdditiveBlending}
-      />
-    </points>
+      </Points>
+    </Float>
   );
 }
 
-function DoubleHelix() {
-  const count = 30;
-  const radius = 2;
-  const points1 = useMemo(() => {
-    return Array.from({ length: count }, (_, i) => {
-      const angle = (i / count) * Math.PI * 4;
-      return new THREE.Vector3(
-        Math.cos(angle) * radius,
-        (i / count) * 10 - 5,
-        Math.sin(angle) * radius
-      );
-    });
-  }, []);
-
-  const points2 = useMemo(() => {
-    return Array.from({ length: count }, (_, i) => {
-      const angle = (i / count) * Math.PI * 4 + Math.PI;
-      return new THREE.Vector3(
-        Math.cos(angle) * radius,
-        (i / count) * 10 - 5,
-        Math.sin(angle) * radius
-      );
-    });
-  }, []);
+function FloatingRings() {
+  const group = useRef();
+  
+  useFrame((state) => {
+    if (group.current) {
+      group.current.rotation.x = Math.sin(state.clock.getElapsedTime() * 0.5) * 0.1;
+      group.current.rotation.y = state.clock.getElapsedTime() * 0.1;
+    }
+  });
 
   return (
-    <group>
-      <Instances>
-        <sphereGeometry args={[0.1, 16, 16]} />
-        <meshPhongMaterial color="#8b5cf6" />
-        {points1.map((point, i) => (
-          <Instance key={i} position={point} />
-        ))}
-        {points2.map((point, i) => (
-          <Instance key={`b${i}`} position={point} />
-        ))}
-      </Instances>
-      {points1.map((point, i) => (
-        points2[i] && (
-          <Trail
-            key={i}
-            width={0.05}
-            length={1}
-            decay={1}
-            local={false}
-            stride={10}
-            interval={1}
-            attenuation={(t) => t * t}
-            color="#8b5cf6"
-          >
-            <mesh position={point}>
-              <sphereGeometry args={[0.01]} />
-              <meshBasicMaterial color="#8b5cf6" />
-            </mesh>
-          </Trail>
-        )
+    <group ref={group}>
+      {[1, 2, 3].map((ring, i) => (
+        <mesh key={i} position={[0, i * 0.5, 0]}>
+          <torusGeometry args={[ring * 1.5, 0.02, 16, 100]} />
+          <meshStandardMaterial 
+            color="#4c1d95"
+            emissive="#4c1d95"
+            emissiveIntensity={0.5}
+            transparent
+            opacity={0.7}
+          />
+        </mesh>
       ))}
     </group>
   );
@@ -144,29 +90,32 @@ export default function Scene3D() {
   return (
     <div className="absolute inset-0">
       <Canvas
-        camera={{ position: [0, 0, 15], fov: 60 }}
+        camera={{ 
+          position: [0, 0, 10], 
+          fov: window.innerWidth < 768 ? 75 : 60,
+          near: 0.1,
+          far: 1000 
+        }}
         gl={{ 
           antialias: true,
           powerPreference: "high-performance",
-          alpha: true 
+          alpha: true,
+          stencil: false,
+          depth: false
         }}
+        dpr={[1, 2]}
+        performance={{ min: 0.5 }}
       >
         <color attach="background" args={['#000000']} />
-        <fog attach="fog" args={['#000000', 5, 30]} />
+        <fog attach="fog" args={['#000000', 5, 15]} />
         
-        <ParticleGalaxy />
+        <GalaxyField />
+        <FloatingRings />
         
-        <Float
-          speed={2}
-          rotationIntensity={1}
-          floatIntensity={2}
-        >
-          <DoubleHelix />
-        </Float>
-
         <ambientLight intensity={0.2} />
-        <directionalLight position={[10, 10, 5]} intensity={1} />
-        <Preload all />
+        <directionalLight position={[10, 10, 5]} intensity={0.5} />
+        
+        <PerspectiveCamera makeDefault />
       </Canvas>
     </div>
   );
