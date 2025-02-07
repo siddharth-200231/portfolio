@@ -220,88 +220,109 @@ const EnhancedHero = () => {
     <section className="min-h-[100dvh] relative overflow-hidden bg-gradient-to-br from-black via-gray-900 to-black">
       <Scene3D />
 
+      {/* Enhanced Background Effects */}
       <div className="absolute inset-0 bg-grid opacity-20 animate-fade-in">
         <div className="absolute inset-0 bg-gradient-radial from-purple-500/20 via-transparent to-transparent animate-pulse-slow" />
+        <div className="absolute inset-0 bg-gradient-conic from-purple-500/10 via-blue-500/10 to-purple-500/10 animate-spin-slow" />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
       </div>
 
-      <div className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 md:py-16 min-h-[100dvh] flex items-center">
+      <div className="container mx-auto px-4 py-8 min-h-[100dvh] flex items-center">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 w-full">
-          {/* Left Content - Mobile First */}
-          <div className="space-y-6 sm:space-y-8 text-center lg:text-left order-2 lg:order-1 relative z-20">
-            <div className="space-y-4 backdrop-blur-sm bg-black/30 p-6 rounded-xl border border-white/10">
+          {/* Left Content - Enhanced Mobile Layout */}
+          <div className="space-y-6 md:space-y-8 text-center lg:text-left order-2 lg:order-1 relative z-20">
+            <div className="space-y-4 backdrop-blur-sm bg-black/30 p-4 md:p-6 rounded-xl border border-white/10 transform hover:scale-[1.02] transition-all duration-300">
               <h2 className="text-gray-200 text-base sm:text-lg md:text-xl font-medium tracking-wide drop-shadow-lg">
                 Hello, I'm
               </h2>
-              <h1 className="text-4xl sm:text-5xl md:text-6xl xl:text-7xl font-bold 
-                             bg-clip-text text-transparent bg-gradient-to-r 
-                             from-white via-purple-500 to-blue-500
-                             drop-shadow-[0_0_25px_rgba(139,92,246,0.5)]">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold 
+                           bg-clip-text text-transparent bg-gradient-to-r 
+                           from-white via-purple-500 to-blue-500
+                           animate-gradient">
                 Siddharth Sahu
               </h1>
               <div className="flex items-center gap-3 justify-center lg:justify-start">
-                <div className="h-1 w-12 bg-purple-500 shadow-glow" />
+                <div className="h-1 w-0 bg-purple-500 shadow-glow animate-width" />
                 <p className="text-lg sm:text-xl md:text-2xl text-white font-semibold drop-shadow-lg">
                   Full Stack Developer
                 </p>
               </div>
             </div>
 
-            <p className="text-white text-sm sm:text-base md:text-lg 
-                          max-w-xl mx-auto lg:mx-0 leading-relaxed
-                          drop-shadow-lg bg-black/30 p-4 rounded-lg">
+            {/* Enhanced Mobile Description */}
+            <p className="text-white/90 text-sm sm:text-base md:text-lg 
+                       max-w-xl mx-auto lg:mx-0 leading-relaxed
+                       backdrop-blur-sm bg-black/30 p-4 rounded-lg
+                       border border-white/10 transform hover:scale-[1.02] transition-all duration-300">
               Crafting digital experiences through clean code and modern design.
               Specialized in building scalable web applications with cutting-edge technologies.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start 
-                            drop-shadow-lg">
-              <button className="px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 
-                                rounded-full text-white font-medium text-sm sm:text-base
-                                shadow-lg shadow-purple-500/25 hover:shadow-purple-500/50
-                                transition-all duration-300">
-                Get in Touch
+            {/* Mobile-optimized Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+              <button className="group px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 
+                             rounded-full text-white font-medium text-sm sm:text-base
+                             shadow-lg shadow-purple-500/25 hover:shadow-purple-500/50
+                             transform hover:scale-105 transition-all duration-300">
+                <span className="flex items-center justify-center gap-2">
+                  Get in Touch
+                  <Mail className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </span>
               </button>
-              <button className="px-6 py-3 border border-white/20 rounded-full 
-                                text-white font-medium text-sm sm:text-base
-                                backdrop-blur-sm bg-white/10 hover:bg-white/20
-                                transition-all duration-300">
-                View Projects
+              <button className="group px-6 py-3 border border-white/20 rounded-full 
+                             text-white font-medium text-sm sm:text-base
+                             backdrop-blur-sm bg-white/5 hover:bg-white/10
+                             transform hover:scale-105 transition-all duration-300">
+                <span className="flex items-center justify-center gap-2">
+                  View Projects
+                  <Code className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </span>
               </button>
             </div>
 
+            {/* Mobile-optimized Tech Stack */}
             <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
               {["React", "TypeScript", "Node.js", "AWS"].map((tech, i) => (
                 <div key={i} 
                      className="tech-pill text-sm sm:text-base
-                                bg-white/10 backdrop-blur-sm text-white
-                                border border-white/20 shadow-lg">
+                              bg-gradient-to-r from-purple-500/10 to-blue-500/10
+                              backdrop-blur-sm text-white
+                              border border-white/10 shadow-lg
+                              transform hover:scale-110 transition-all duration-300">
                   {tech}
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Right Content - Profile Image */}
-          <div className="relative mt-4 lg:mt-0 order-1 lg:order-2">
-            <div className="relative z-10 max-w-[200px] sm:max-w-[250px] md:max-w-[300px] mx-auto">
+          {/* Right Content - Enhanced Mobile Profile */}
+          <div className="relative mt-8 lg:mt-0 order-1 lg:order-2">
+            <div className="relative z-10 max-w-[250px] sm:max-w-[300px] mx-auto">
               <div className="relative perspective-card group">
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-blue-500/20 rounded-3xl transform -skew-x-12 group-hover:skew-x-0 transition-transform duration-300" />
-                <div className="relative bg-gray-900/80 backdrop-blur-xl p-4 sm:p-6 rounded-3xl border border-gray-800">
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-blue-500/20 
+                               rounded-3xl transform -skew-x-12 group-hover:skew-x-0 
+                               transition-transform duration-300" />
+                <div className="relative bg-gray-900/80 backdrop-blur-xl p-4 sm:p-6 
+                               rounded-3xl border border-gray-800 group-hover:border-purple-500/50 
+                               transition-all duration-300">
                   <img 
                     src="/pfp.jpeg" 
                     alt="Siddharth Sahu"
-                    className="w-full aspect-[4/5] object-cover rounded-2xl"
+                    className="w-full aspect-[4/5] object-cover rounded-2xl 
+                             transform group-hover:scale-105 transition-transform duration-300"
                   />
                 </div>
               </div>
             </div>
 
-            {/* Floating Elements - Adjusted for Mobile */}
+            {/* Enhanced Mobile Floating Elements */}
             <div className="absolute inset-0 pointer-events-none">
-              <div className="floating-element absolute top-10 left-0 w-16 sm:w-20 h-16 sm:h-20 bg-purple-500/10 rounded-full blur-xl" />
-              <div className="floating-element absolute bottom-10 right-0 w-24 sm:w-32 h-24 sm:h-32 bg-blue-500/10 rounded-full blur-xl" />
-              <div className="floating-element absolute top-20 right-10 w-12 sm:w-16 h-12 sm:h-16 bg-cyan-500/10 rounded-full blur-xl" />
+              <div className="floating-element absolute top-10 left-0 w-16 sm:w-20 h-16 sm:h-20 
+                            bg-purple-500/10 rounded-full blur-xl animate-pulse-slow" />
+              <div className="floating-element absolute bottom-10 right-0 w-24 sm:w-32 h-24 sm:h-32 
+                            bg-blue-500/10 rounded-full blur-xl animate-pulse-slow" />
+              <div className="floating-element absolute top-20 right-10 w-12 sm:w-16 h-12 sm:h-16 
+                            bg-cyan-500/10 rounded-full blur-xl animate-pulse-slow" />
             </div>
           </div>
         </div>
