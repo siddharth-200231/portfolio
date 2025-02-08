@@ -4,29 +4,61 @@
 
 @layer base {
   :root {
-    --color-primary: 168 85 247;
-    --color-secondary: 59 130 246;
-    --color-background: 0 0 0;
+    /* Core Colors */
+    --color-primary: 139 92 246;     /* Purple */
+    --color-secondary: 59 130 246;    /* Blue */
+    --color-accent: 236 72 153;      /* Pink */
+    --color-background: 3 7 18;      /* Deep Navy */
+    --color-surface: 17 24 39;       /* Gray-900 */
     --color-text: 255 255 255;
+    
+    /* Gradient Colors */
+    --gradient-1: linear-gradient(to right, rgb(var(--color-primary)), rgb(var(--color-secondary)));
+    --gradient-2: linear-gradient(to bottom right, rgb(var(--color-accent)), rgb(var(--color-primary)));
+    --gradient-glow: linear-gradient(to bottom right, rgba(var(--color-primary), 0.5), rgba(var(--color-secondary), 0.5));
   }
 
   body {
-    @apply bg-black text-white antialiased;
+    @apply bg-gradient-to-br from-black via-gray-900 to-black text-white antialiased;
+    background-attachment: fixed;
   }
 }
 
 @layer components {
   .glowing-card {
-    @apply relative bg-gray-900/50 backdrop-blur-xl 
-           border border-gray-800/50 rounded-2xl
-           transition-all duration-300 ease-out
-           hover:border-purple-500/30 
-           hover:shadow-lg hover:shadow-purple-500/10
-           hover:-translate-y-1;
+    @apply relative bg-gray-900/50 backdrop-blur-xl overflow-hidden
+           border border-white/10 rounded-2xl
+           shadow-[0_0_50px_-12px] shadow-purple-500/30
+           hover:shadow-purple-500/40 hover:border-white/20
+           transition-all duration-500;
+  }
+
+  .glass-panel {
+    @apply relative backdrop-blur-md bg-white/5
+           border border-white/10 rounded-xl
+           shadow-[0_8px_32px_0] shadow-black/40;
+  }
+
+  .glow-effect {
+    @apply before:absolute before:inset-0
+           before:bg-gradient-glow before:opacity-0
+           before:blur-2xl before:transition-opacity
+           hover:before:opacity-100;
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent
+           bg-gradient-to-r from-purple-400 via-pink-500 to-blue-500;
+  }
+
+  .border-gradient {
+    @apply border-2 border-transparent
+           bg-gradient-to-r from-purple-500 to-blue-500
+           bg-clip-padding;
   }
 
   .tech-pill {
-    @apply px-4 py-2 rounded-full bg-white/5 backdrop-blur-sm;
+    @apply px-4 py-2 rounded-full;
     text-shadow: 0 2px 4px rgba(0,0,0,0.3);
   }
 
@@ -48,6 +80,50 @@
   .grid-layout {
     @apply grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8;
   }
+
+  .animate-glow {
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+
+  .bg-grid {
+    background-size: 50px 50px;
+    background-image: 
+      linear-gradient(to right, rgba(255,255,255,.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,.05) 1px, transparent 1px);
+  }
+
+  .bg-gradient-glow {
+    background: var(--gradient-glow);
+  }
+
+  @keyframes glow {
+    0% { box-shadow: 0 0 20px rgba(var(--color-primary), 0.5); }
+    100% { box-shadow: 0 0 40px rgba(var(--color-primary), 0.8); }
+  }
+
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+  
+  .bg-grid-white {
+    background-size: 30px 30px;
+    background-image: 
+      linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);
+  }
+
+  .rotate-y-12 {
+    transform: rotateY(12deg);
+  }
+
+  .animate-pulse-slow {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
 }
 
 @keyframes gradient-shift {
@@ -56,18 +132,39 @@
   100% { background-position: 0% 50%; }
 }
 
-.animate-gradient {
-  animation: gradient-shift 15s ease infinite;
-  background-size: 400% 400%;
+@keyframes orbital-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
-.bg-grid {
-  background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-  background-size: 20px 20px;
+@keyframes glow-pulse {
+  0% { box-shadow: 0 0 20px rgba(168,85,247,0.3); }
+  50% { box-shadow: 0 0 40px rgba(168,85,247,0.6); }
+  100% { box-shadow: 0 0 20px rgba(168,85,247,0.3); }
 }
 
-/* Responsive Typography */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+.animate-gradient-shift {
+  background-size: 200% auto;
+  animation: gradient-shift 6s ease infinite;
+}
+
+.animate-orbital-rotate {
+  animation: orbital-rotate 24s linear infinite;
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 3s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
 @screen sm {
   html {
     font-size: 14px;
@@ -79,6 +176,7 @@
     font-size: 16px;
   }
 }
+
 @keyframes pulse-slow {
   0%, 100% { opacity: 0.4; }
   50% { opacity: 0.7; }
@@ -107,6 +205,7 @@
   50% { background-position: 100% center; }
   100% { background-position: 0% center; }
 }
+
 .shadow-glow {
   box-shadow: 0 0 15px rgba(139,92,246,0.5);
 }
@@ -177,28 +276,6 @@
   animation-delay: 300ms;
 }
 
-.tech-pill {
-  @apply px-4 py-2 rounded-full;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-}
-@keyframes slide-up {
-  from { transform: translateY(100%); }
-  to { transform: translateY(0); }
-}
-
-@keyframes expand {
-  from { width: 0; }
-  to { width: 100px; }
-}
-
-.animate-slide-up {
-  animation: slide-up 1s ease-out forwards;
-}
-
-.animate-expand {
-  animation: expand 1.5s ease-out forwards;
-}
-
 .perspective-3d {
   perspective: 2000px;
 }
@@ -217,72 +294,4 @@
 
 .rotate-y-180 {
   transform: rotateY(180deg);
-}
-@layer utilities {
-  .perspective-1000 {
-    perspective: 1000px;
-  }
-  
-  .bg-grid-white {
-    background-size: 30px 30px;
-    background-image: 
-      linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);
-  }
-}
-@layer utilities {
-  .perspective-1000 {
-    perspective: 1000px;
-  }
-
-  .rotate-y-12 {
-    transform: rotateY(12deg);
-  }
-
-  .animate-pulse-slow {
-    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
-  }
-}
-@keyframes gradient-shift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-@keyframes orbital-rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-@keyframes glow-pulse {
-  0% { box-shadow: 0 0 20px rgba(168,85,247,0.3); }
-  50% { box-shadow: 0 0 40px rgba(168,85,247,0.6); }
-  100% { box-shadow: 0 0 20px rgba(168,85,247,0.3); }
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-20px); }
-}
-
-.animate-gradient-shift {
-  background-size: 200% auto;
-  animation: gradient-shift 6s ease infinite;
-}
-
-.animate-orbital-rotate {
-  animation: orbital-rotate 24s linear infinite;
-}
-
-.animate-glow-pulse {
-  animation: glow-pulse 3s ease-in-out infinite;
-}
-
-.animate-float {
-  animation: float 6s ease-in-out infinite;
 }

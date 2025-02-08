@@ -7,6 +7,10 @@ import {
   PointMaterial,
 } from "@react-three/drei";
 import * as THREE from "three";
+import { InstancedMesh, Color, Vector3 } from 'three';
+import { lerp } from 'three/src/math/MathUtils';
+import { Suspense } from 'react';
+import { OrbitControls } from '@react-three/drei';
 
 function GalaxyField() {
   const points = useRef();
@@ -169,38 +173,30 @@ function PlanetaryNebula() {
   );
 }
 
-export default function Scene3D() {
+// Scene Component (Inner)
+const Scene = () => {
   return (
-    <div className="absolute inset-0">
-      <Canvas
-        camera={{
-          position: [0, 0, 10],
-          fov: window.innerWidth < 768 ? 75 : 60,
-          near: 0.1,
-          far: 1000,
-        }}
-        gl={{
-          antialias: true,
-          powerPreference: "high-performance",
-          alpha: true,
-          stencil: false,
-          depth: false,
-        }}
-        dpr={[1, 2]}
-        performance={{ min: 0.5 }}
-      >
-        <color attach="background" args={["#000000"]} />
-        <fog attach="fog" args={["#000000", 5, 15]} />
-
-        <GalaxyField />
-        <FloatingRings />
-        <PlanetaryNebula />
-
-        <ambientLight intensity={0.2} />
-        <directionalLight position={[10, 10, 5]} intensity={0.5} />
-
-        <PerspectiveCamera makeDefault />
-      </Canvas>
-    </div>
+    <group>
+      <GalaxyField />
+      <FloatingRings />
+      <ambientLight intensity={0.5} />
+      <pointLight position={[10, 10, 10]} />
+    </group>
   );
-}
+};
+
+// Main Component (Outer)
+const Scene3D = () => {
+  return (
+    <Canvas
+      camera={{ position: [0, 0, 5], fov: 75 }}
+      style={{ position: 'absolute', top: 0, left: 0, pointerEvents: 'none' }}
+    >
+      <Suspense fallback={null}>
+        <Scene />
+      </Suspense>
+    </Canvas>
+  );
+};
+
+export default Scene3D;

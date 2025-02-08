@@ -1,8 +1,7 @@
-import React, { useRef, lazy, Suspense } from "react";
+import React, { useRef, lazy, Suspense, useEffect } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ScrollToPlugin } from "gsap/ScrollToPlugin";
+import { ScrollTrigger, ScrollToPlugin } from "gsap/all";
 import {
   Github,
   Mail,
@@ -17,7 +16,23 @@ import {
   MapPin,
 } from "lucide-react";
 import Scene3D from "./Scene3D";
-// Register GSAP plugins
+
+// Type Definitions
+interface SectionProps {
+  children: React.ReactNode;
+  className?: string;
+  id?: string;
+}
+
+interface TimelineItem {
+  date: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  icon: React.ReactNode;
+}
+
+// Register GSAP Plugins
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin, useGSAP);
 
 // Lazy load heavy components
@@ -394,6 +409,52 @@ const TimelineItem = ({ item, index }) => {
         </div>
       </div>
     </div>
+  );
+};
+
+// Section Wrapper Component
+const Section = ({ children, className = '', id }: SectionProps) => (
+  <section
+    id={id}
+    className={`relative min-h-screen py-20 ${className}`}
+  >
+    {children}
+  </section>
+);
+
+// Container Component
+const Container = ({ children }: { children: React.ReactNode }) => (
+  <div className="container mx-auto px-4 md:px-6">
+    {children}
+  </div>
+);
+
+// Hero Section Component
+const HeroSection = () => {
+  const heroRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from('.hero-content > *', {
+        y: 50,
+        opacity: 0,
+        duration: 1,
+        stagger: 0.2,
+        ease: 'power3.out'
+      });
+    }, heroRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <Section id="home">
+      <Container>
+        <div ref={heroRef} className="hero-content grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          {/* Content here from previous implementation */}
+        </div>
+      </Container>
+    </Section>
   );
 };
 
